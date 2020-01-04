@@ -1,14 +1,14 @@
-/// A ScmPoint in schematic space. y-pos point up and x-pos points right,
-/// everyone's favorite coordinate system
-pub struct ScmPoint {
+/// A DspPoint Display Point in display space, with screen
+/// coordinates, y-pos points down and x-pos points right.
+pub struct DspPoint {
     pub x: i32,
     pub y: i32,
 }
 
 ///
 pub struct Segment {
-    pub p1: ScmPoint,
-    pub p2: ScmPoint,
+    pub p1: DspPoint,
+    pub p2: DspPoint,
 }
 
 pub struct Err(String);
@@ -37,7 +37,7 @@ pub struct Wire {
 }
 
 pub trait Entity {
-    fn point_inside(self: &Self, p: &ScmPoint) -> bool;
+    fn point_inside(self: &Self, p: &DspPoint) -> bool;
     fn bounding_box(self: &Self) -> BBox;
     fn draw_commands(self: &Self) -> Vec<Command>;
 }
@@ -52,13 +52,17 @@ pub struct Color {
     pub b: u8,
 }
 
+/// High level interface commands supported by Display. The display has
+/// no memory (for now), so each frame is repainted.  This could prove
+/// to be slow, and should be one of the first things to optimize.
 pub enum Command<'a> {
+    /// Add a
     AddSegment(Segment),
-    AddText(ScmPoint, String),
+    AddText(DspPoint, String),
     SetStrokeSize(f32),
     SetDrawColor(&'a Color),
-    FilledCircle(ScmPoint, u32), // center, radius
-    Circle(ScmPoint, u32),       // center, radius
+    FilledCircle(DspPoint, u32), // center, radius
+    Circle(DspPoint, u32),       // center, radius
     FillScreen,
     Redraw,
     Zoom(i32),
@@ -76,10 +80,12 @@ pub trait Display {
 
 pub struct LinuxDisplay {
     pub ctx: sdl2::Sdl,
-    pub canvas: u8, //sdl2::render::Canvas<sdl2::video::Window>,
+    pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
     pub zoom: i32,
 }
 
-pub struct App {
-    display: dyn Display,
-}
+// -----------------------------------------------------------------------------
+
+// pub struct App {
+//     display: dyn Display,
+// }

@@ -14,15 +14,7 @@ pub fn start() {
     let mut i = 0;
 
     'running: loop {
-        i = (i + 1) % 255;
-        let color = Color {
-            r: i,
-            g: 64,
-            b: 255 - i,
-        };
-
-        // display.canvas.set_draw_color(SdlColor::RGB(i, 64, 255 - i));
-        // display.canvas.clear();
+        i += 1;
 
         for event in event_pump.poll_iter() {
             match event {
@@ -35,7 +27,6 @@ pub fn start() {
             }
         }
 
-        // The rest of the game loop goes here...
         display.exec_cmds(vec![
             Command::SetDrawColor(&colors::WHITE),
             Command::FillScreen,
@@ -46,9 +37,6 @@ pub fn start() {
         ]);
 
         display.canvas.present();
-        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
-        if i > 250 {
-            break;
-        }
+        std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
 }

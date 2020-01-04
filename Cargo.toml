@@ -8,7 +8,11 @@ edition = "2018"
 
 
 
-[dependencies]
-sdl2_gfx = "0.24.0"
-sdl2 = "0.24.0"
+# [dependencies]
+# # sdl2_gfx = "0.24.0"
+# sdl2 = "0.32.0"
 
+[dependencies.sdl2]
+version = "0.32.0"
+default-features = false
+features = ["gfx"]
