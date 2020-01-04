@@ -5,8 +5,8 @@ use sdl2::keyboard::Keycode;
 //use sdl2::pixels::Color as SdlColor;
 use std::time::Duration;
 
-use crate::colors;
-use crate::types::*;
+use crate::dsp::colors;
+use crate::dsp::types::*;
 
 pub fn start() {
     let mut display = LinuxDisplay::new();

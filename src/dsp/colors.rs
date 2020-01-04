@@ -1,4 +1,4 @@
-use crate::types::*;
+use crate::dsp::types::*;
 
 pub const WHITE: Color = Color {
     r: 255,

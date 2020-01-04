@@ -13,39 +13,6 @@ pub struct Segment {
 
 pub struct Err(String);
 
-pub enum Value {
-    Label(String),
-    Str(String),
-    Int(i32),
-}
-
-pub struct Button {
-    text: String,
-}
-
-pub struct Register {
-    value: Value,
-}
-
-pub struct BBox {
-    top_left: (i32, i32),
-    bottom_right: (i32, i32),
-}
-
-pub struct Wire {
-    segments: Vec<Segment>,
-}
-
-pub trait Entity {
-    fn point_inside(self: &Self, p: &DspPoint) -> bool;
-    fn bounding_box(self: &Self) -> BBox;
-    fn draw_commands(self: &Self) -> Vec<Command>;
-}
-
-pub trait Schematic {
-    fn add_entity(e: dyn Entity) -> Err;
-}
-
 pub struct Color {
     pub r: u8,
     pub g: u8,

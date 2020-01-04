@@ -1,4 +1,4 @@
-use crate::types::*;
+use crate::dsp::types::*;
 use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::pixels::Color;
 
