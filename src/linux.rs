@@ -1,32 +1,21 @@
-extern crate sdl2;
-
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
-use std::time::Duration;
-
 use crate::dsp::colors;
 use crate::dsp::types::*;
 use crate::schem::types::*;
+use std::time::Duration;
 
 pub fn start() {
+    let _font_data = std::include_bytes!("../media/font/FontAwesome.otf");
     let mut display = LinuxDisplay::new();
     let mut schem = Schematic::new();
 
     schem.add_wire();
 
-    let mut event_pump = display.ctx.event_pump().unwrap();
-    let mut i = 0;
-
     'running: loop {
-        // i += 1;
-
-        for event in event_pump.poll_iter() {
+        for event in display.get_events() {
             match event {
-                Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => break 'running,
+                Event::Quit => {
+                    break 'running;
+                }
                 _ => {}
             }
         }
