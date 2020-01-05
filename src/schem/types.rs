@@ -1,39 +1,39 @@
-use crate::dsp::types::*
+use crate::dsp::types::*;
 
 pub enum Value {
     Label(String),
     Str(String),
     Int(i32),
+    Bool,
 }
 
 pub struct Button {
-    text: String,
+    pub text: String,
 }
 
 pub struct Register {
-    value: Value,
+    pub value: Value,
 }
 
 pub struct BBox {
-    top_left: DspPoint,
-    bottom_right: DspPoint,
+    pub top_left: DspPoint,
+    pub bottom_right: DspPoint,
 }
 
 pub struct Wire {
-    segments: Vec<Segment>,
+    pub segments: Vec<Segment>,
 }
 
-pub struct Module {
-    entities: Vec<Entity>,
-}
-
+// pub struct Module {
+//     entities: Vec<dyn Entity>,
+// }
 
 pub trait Entity {
-    fn point_inside(self: &Self, p: &DspPoint) -> bool;
-    fn bounding_box(self: &Self) -> BBox;
-    fn draw_commands(self: &Self) -> Vec<Command>;
+    // fn point_inside(self: &Self, p: &DspPoint) -> bool;
+    // fn bounding_box(self: &Self) -> BBox;
+    fn render(self: &Self) -> Vec<Command>;
 }
 
 pub struct Schematic {
-    fn add_entity(e: dyn Entity) -> Err;
+    pub entities: Vec<Box<dyn Entity>>, //fn add_entity(e: dyn Entity) -> Err;
 }

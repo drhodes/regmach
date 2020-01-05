@@ -1,11 +1,13 @@
 /// A DspPoint Display Point in display space, with screen
 /// coordinates, y-pos points down and x-pos points right.
+#[derive(Clone)]
 pub struct DspPoint {
     pub x: i32,
     pub y: i32,
 }
 
 ///
+#[derive(Clone)]
 pub struct Segment {
     pub p1: DspPoint,
     pub p2: DspPoint,
@@ -25,13 +27,13 @@ pub struct Color {
 pub enum Command<'a> {
     /// Add a
     AddSegment(Segment),
-    AddText(DspPoint, String),
+    AddText(i16, i16, String),
     SetStrokeSize(f32),
     SetDrawColor(&'a Color),
     FilledCircle(DspPoint, u32), // center, radius
     Circle(DspPoint, u32),       // center, radius
     FillScreen,
-    Redraw,
+    //Redraw,
     Zoom(i32),
 }
 
@@ -46,6 +48,7 @@ pub trait Display {
 }
 
 pub struct LinuxDisplay {
+    pub current_color: sdl2::pixels::Color,
     pub ctx: sdl2::Sdl,
     pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
     pub zoom: i32,

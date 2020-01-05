@@ -17,6 +17,7 @@ impl LinuxDisplay {
         let canvas = window.into_canvas().build().unwrap();
 
         LinuxDisplay {
+            current_color: Color::RGB(0, 0, 0),
             ctx: sdl_context,
             canvas: canvas,
             zoom: 1,
@@ -29,13 +30,14 @@ impl Display for LinuxDisplay {
         match cmd {
             Command::FillScreen => self.canvas.clear(),
             Command::SetDrawColor(c) => {
+                self.current_color = Color::RGB(c.r, c.g, c.b);
                 self.canvas.set_draw_color(Color::RGB(c.r, c.g, c.b));
             }
             Command::AddSegment(seg) => {
                 // width of all lines? think about this. depends on
                 // zoom, if zoom is a display property, or schematic
                 // property.
-                let line_width = 4;
+                let line_width = 1;
 
                 let p1 = (seg.p1.x, seg.p1.y);
                 let p2 = (seg.p2.x, seg.p2.y);
@@ -44,12 +46,11 @@ impl Display for LinuxDisplay {
                     seg.p1.y as i16,
                     seg.p2.x as i16,
                     seg.p2.y as i16,
-                    4,
-                    Color::RGB(0xff, 67, 78),
+                    line_width,
+                    self.current_color,
                 );
 
-                self.canvas.string(20, 20, "woot", Color::RGB(0xff, 67, 78));
-
+                self.canvas.string(20, 20, "woot", self.current_color);
                 self.canvas.draw_line(p1, p2);
             }
             _ => {}
