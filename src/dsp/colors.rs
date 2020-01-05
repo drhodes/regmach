@@ -19,8 +19,21 @@ pub const GREY: Color = Color {
     g: 50,
     b: 50,
 };
+
 pub const GRAY: Color = Color {
     r: 50,
     g: 50,
     b: 50,
+};
+
+pub const GRID_GRAY: Color = Color {
+    r: 0xEE,
+    g: 0xEE,
+    b: 0xEE,
+};
+
+pub const BACKGROUND: Color = Color {
+    r: 250,
+    g: 250,
+    b: 250,
 };
