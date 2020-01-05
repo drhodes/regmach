@@ -37,6 +37,11 @@ pub enum Command<'a> {
     Zoom(i32),
 }
 
+pub enum Event {
+    Quit,
+    MouseUp(DspPoint),
+}
+
 /// Display does not know about entities.  Display is a basic command
 /// driven graphics provider.  It's an interface to the lower level
 /// canvas on whatever platform.  Entities don't know about the
@@ -45,13 +50,15 @@ pub enum Command<'a> {
 pub trait Display {
     fn exec(self: &mut Self, cmd: &Command);
     fn exec_cmds(self: &mut Self, cmds: Vec<Command>);
+    fn get_events(self: &mut Self) -> Vec<Event>;
 }
 
 pub struct LinuxDisplay {
-    pub current_color: sdl2::pixels::Color,
     pub ctx: sdl2::Sdl,
     pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
+    pub current_color: sdl2::pixels::Color,
     pub zoom: i32,
+    pub event_pump: sdl2::EventPump,
 }
 
 // -----------------------------------------------------------------------------

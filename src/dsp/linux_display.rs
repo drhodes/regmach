@@ -1,4 +1,5 @@
 use crate::dsp::types::*;
+use sdl2::event::Event as SdlEvent;
 use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::pixels::Color;
 
@@ -6,7 +7,7 @@ impl LinuxDisplay {
     pub fn new() -> LinuxDisplay {
         let sdl_context = sdl2::init().unwrap();
         let video_subsystem = sdl_context.video().unwrap();
-
+        let event_pump = sdl_context.event_pump().unwrap();
         let window = video_subsystem
             .window("register-machines", 800, 600)
             .position_centered()
@@ -21,6 +22,7 @@ impl LinuxDisplay {
             ctx: sdl_context,
             canvas: canvas,
             zoom: 1,
+            event_pump: event_pump,
         }
     }
 }
@@ -61,5 +63,23 @@ impl Display for LinuxDisplay {
         for c in cmds.iter() {
             self.exec(c)
         }
+    }
+
+    fn get_events(self: &mut Self) -> Vec<Event> {
+        let mut evs: Vec<Event> = vec![];
+
+        for event in self.event_pump.poll_iter() {
+            match event {
+                SdlEvent::Quit { .. } => {
+                    evs.push(Event::Quit);
+                }
+                // | sdl2::Event::KeyDown {
+                //     keycode: Some(sdl2::Keycode::Escape),
+                // ..
+                // } => break 'running,
+                _ => {}
+            }
+        }
+        evs
     }
 }
