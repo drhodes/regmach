@@ -1,4 +1,5 @@
 use crate::dsp::types::*;
+use sdl2::pixels::Color as SdlColor;
 
 pub const WHITE: Color = Color {
     r: 255,
@@ -37,3 +38,20 @@ pub const BACKGROUND: Color = Color {
     g: 250,
     b: 250,
 };
+
+pub const CURSOR_LIGHT: Color = Color {
+    r: 190,
+    g: 190,
+    b: 190,
+};
+pub const CURSOR_DARK: Color = Color {
+    r: 23,
+    g: 23,
+    b: 23,
+};
+
+impl Color {
+    pub fn as_sdl(&self) -> SdlColor {
+        SdlColor::RGB(self.r, self.g, self.b)
+    }
+}
