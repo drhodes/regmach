@@ -15,6 +15,7 @@ pub struct Segment {
 
 pub struct Err(String);
 
+#[derive(Clone)]
 pub struct Color {
     pub r: u8,
     pub g: u8,
@@ -24,22 +25,32 @@ pub struct Color {
 /// High level interface commands supported by Display. The display has
 /// no memory (for now), so each frame is repainted.  This could prove
 /// to be slow, and should be one of the first things to optimize.
-pub enum Command<'a> {
+pub enum Command {
     /// Add a
     AddSegment(Segment),
     AddText(i16, i16, String),
-    SetStrokeSize(f32),
-    SetDrawColor(&'a Color),
+    SetStrokeSize(u32),
+    SetDrawColor(Color),
     FilledCircle(DspPoint, u32), // center, radius
     Circle(DspPoint, u32),       // center, radius
     FillScreen,
-    //Redraw,
+    RenderCursor,
     Zoom(i32),
+    IncrementFrame,
 }
 
 pub enum Event {
     Quit,
     MouseUp(DspPoint),
+    MouseDrag(DspPoint),
+    MouseMove(DspPoint),
+}
+
+pub struct DisplayProperties {
+    pub current_color: Color,
+    pub zoom: i32,
+    pub mouse_loc: DspPoint,
+    pub frame: u64,
 }
 
 /// Display does not know about entities.  Display is a basic command
@@ -56,9 +67,8 @@ pub trait Display {
 pub struct LinuxDisplay {
     pub ctx: sdl2::Sdl,
     pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
-    pub current_color: sdl2::pixels::Color,
-    pub zoom: i32,
     pub event_pump: sdl2::EventPump,
+    pub props: DisplayProperties,
 }
 
 // -----------------------------------------------------------------------------
