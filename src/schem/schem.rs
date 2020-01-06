@@ -16,7 +16,7 @@ impl Schematic {
     }
 
     pub fn render_grid(&self) -> Vec<dsp::Command> {
-        vec![dsp::Command::SetDrawColor(&colors::LIGHT_BLUE)]
+        vec![dsp::Command::SetDrawColor(colors::LIGHT_BLUE)]
     }
 
     pub fn add_wire(&mut self) {
