@@ -1,0 +1,3 @@
+
+* A graphical register machine simulator
+Of the ilk found in chapter 5 of SICP.
