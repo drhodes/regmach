@@ -15,18 +15,9 @@ pub struct Register {
     pub value: Value,
 }
 
-pub struct BBox {
-    pub top_left: DspPoint,
-    pub bottom_right: DspPoint,
-}
-
 pub struct Wire {
     pub segments: Vec<Segment>,
 }
-
-// pub struct Module {
-//     entities: Vec<dyn Entity>,
-// }
 
 pub trait Entity {
     // fn point_inside(self: &Self, p: &DspPoint) -> bool;
