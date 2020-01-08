@@ -1,3 +1,15 @@
 
 * A graphical register machine simulator
-Of the ilk found in chapter 5 of SICP.
+** What?
+- Of the ilk found in chapter 5 of SICP.
+
+** Why?
+- It would be neat to be able to mess around with an interactive
+  version of the register machines.
+
+- Would like to get a working build that uses opengl and rust
+  cross-platform and on the browser with a non-trivial project.
+
+
+
+
