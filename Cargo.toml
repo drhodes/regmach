@@ -8,6 +8,9 @@ edition = "2018"
 [dependencies.gl]
 git = "https://github.com/bjz/gl-rs"
 
+[dependencies.glfw]
+git = "https://github.com/bjz/glfw-rs.git"
+
 [dependencies]
 lyon = "0.15.3"
 
