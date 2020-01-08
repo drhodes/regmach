@@ -40,8 +40,8 @@ run: ## run with backtrace
 clean: ## clean all the things
 	bash clean.bash
 
-work: ## open all files in editor
-	emacs -nw src/*.rs Makefile
+work: ## open all files in editor		 
+	emacs -nw Makefile `find src -name '*rs'` Cargo.toml
 
 # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
