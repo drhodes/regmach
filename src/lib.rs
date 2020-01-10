@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 #![allow(unused_must_use)]
 #![feature(box_syntax)]
+#![cfg_attr(rustfmt, rustfmt_skip)]
 
 pub mod linux;
 

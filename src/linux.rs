@@ -171,6 +171,9 @@ unsafe fn link_shaders(vertex_shader: u32, fragment_shader: u32, info_log: &mut 
             str::from_utf8(&info_log).unwrap()
         );
     }
+
+    gl::DeleteShader(vertex_shader);
+    gl::DeleteShader(fragment_shader);
     shader_program
 }
 
@@ -193,18 +196,18 @@ fn gl_setup() -> (u32, u32, u32) {
         // Link Shaders
         let shader_program = link_shaders(vertex_shader, fragment_shader, &mut info_log);
 
-        gl::DeleteShader(vertex_shader);
-        gl::DeleteShader(fragment_shader);
-
-        // Set up vao and vbos
+        // Set up vao and vbos, x,y,z,r,b,g
+        #[rustfmt::skip]
         let vertices: [f32; 18] = [
-            // left
-            -0.5, -0.5, 0.0, 1.0, 0.0, 0.0, // right
-            0.5, -0.5, 0.0, 0.0, 1.0, 0.0, // top
-            0.0, 0.5, 0.0, 0.0, 0.0, 1.0,
+            // bottom left vertex of triangle, red
+            -0.5, -0.5, 0.0,   1.0, 0.0, 0.0,
+            // bottom right vertex, blue
+            0.5, -0.5, 0.0,    0.0, 1.0, 0.0,
+            // top point, green
+            0.0, 0.5, 0.0,     0.0, 0.0, 1.0,
         ];
 
-        // stack allocate buffer ids
+        // stack allocate object ids
         let (mut vbo, mut vao) = (0, 0);
         // setup vertex array object and store id in vao
         gl::GenVertexArrays(1, &mut vao);
@@ -230,24 +233,26 @@ fn gl_setup() -> (u32, u32, u32) {
         // Enable a generic vertex attribute array
         gl::EnableVertexAttribArray(0);
 
+        // define an array of generic vertex attribute data for verts
         gl::VertexAttribPointer(
-            0,
-            3,
+            0, // starting with first element
+            3, // with points made of 3 floats
             gl::FLOAT,
-            gl::FALSE,
-            6 * mem::size_of::<GLfloat>() as GLsizei,
-            ptr::null(),
+            gl::FALSE,                                // not normalized
+            6 * mem::size_of::<GLfloat>() as GLsizei, // stride, new verts start every 6th float
+            ptr::null(),                              // offset
         );
 
+        // define an array of generic vertex attribute data for colors
         gl::EnableVertexAttribArray(1);
 
         gl::VertexAttribPointer(
-            1,
-            3,
+            1, // starting at second element
+            3, // colors have three componentes
             gl::FLOAT,
-            gl::FALSE,
-            6 * mem::size_of::<GLfloat>() as GLsizei,
-            (3 * mem::size_of::<GLfloat>()) as *const c_void,
+            gl::FALSE,                                        // not normalized
+            6 * mem::size_of::<GLfloat>() as GLsizei,         // same stride as before.
+            (3 * mem::size_of::<GLfloat>()) as *const c_void, // start at array[3]
         );
 
         gl::BindBuffer(gl::ARRAY_BUFFER, 0);
