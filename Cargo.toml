@@ -4,7 +4,6 @@ version = "0.1.0"
 authors = ["Derek <physci@gmail.com>"]
 edition = "2018"
 
-
 [dependencies.gl]
 git = "https://github.com/bjz/gl-rs"
 

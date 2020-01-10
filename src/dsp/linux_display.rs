@@ -4,10 +4,10 @@ use sdl2::event::Event::MouseMotion as SdlMouseMotion;
 use sdl2::gfx::primitives::DrawRenderer;
 use std::path::Path;
 
-use lyon::math::{point, Point};
-use lyon::path::builder::*;
-use lyon::path::Path as LPath;
-use lyon::tessellation::*;
+// use lyon::math::{point, Point};
+// use lyon::path::builder::*;
+// use lyon::path::Path as LPath;
+// use lyon::tessellation::*;
 
 impl LinuxDisplay {
     pub fn new() -> LinuxDisplay {

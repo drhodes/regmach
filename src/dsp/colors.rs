@@ -14,7 +14,7 @@ pub const RED: Color = c(255, 0, 0);
 pub const GREY: Color = c(50, 50, 5);
 pub const GRAY: Color = c(50, 50, 5);
 pub const GRID_GRAY: Color = c(0xEE, 0xEE, 0xEE);
-pub const BACKGROUND: Color = c(250, 250, 2);
+pub const BACKGROUND: Color = c(250, 250, 250);
 pub const CURSOR_LIGHT: Color = c(190, 190, 190);
 pub const CURSOR_DARK: Color = c(23, 23, 23);
 
@@ -22,7 +22,12 @@ impl Color {
     pub fn as_sdl(&self) -> SdlColor {
         SdlColor::RGB(self.r, self.g, self.b)
     }
-    // pub fn as_gl(&self) -> SdlColor {
-    //     SdlColor::RGB(self.r, self.g, self.b)
-    // }
+    pub fn as_gl(&self) -> (f32, f32, f32, f32) {
+        (
+            self.r as f32 / 255.0,
+            self.g as f32 / 255.0,
+            self.b as f32 / 255.0,
+            1.0,
+        )
+    }
 }
