@@ -1,5 +1,9 @@
-#![allow(dead_code)]
-#![allow(unused_must_use)]
+// #![allow(dead_code)]
+// #![allow(unused_must_use)]
+// #![allow(unused_imports)]
+// #![allow(unused_variables)]
+#![allow(warnings)]
+
 #![feature(box_syntax)]
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
