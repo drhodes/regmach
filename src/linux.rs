@@ -38,7 +38,7 @@ pub fn start() {
 
     gl::load_with(|symbol| window.get_proc_address(symbol) as *const _);
 
-    let (shader_program, vao, vbo, color_buffer_id) = gl_setup();
+    let (shader_program, vao, vbo) = gl_setup();
 
     while !window.should_close() {
         glfw.poll_events();
@@ -59,11 +59,203 @@ pub fn start() {
                 println!("opengl err: {:?}", err);
             }
 
-            gl::DrawArrays(gl::TRIANGLES, 0, 3);
+            //gl::DrawArrays(gl::TRIANGLES, 0, 3);
+            gl::DrawElements(gl::TRIANGLES, 4, gl::UNSIGNED_INT, ptr::null());
         }
         window.swap_buffers();
     }
 }
+
+fn gl_setup() -> (u32, u32, u32) {
+    // -------------------------------------------------------
+    // Setup shader compilation checks
+    unsafe {
+        let mut success = i32::from(gl::FALSE);
+        let mut info_log: Vec<u8> = Vec::with_capacity(512);
+        info_log.set_len(512 - 1); // -1 to skip trialing null character
+
+        // Compile shaders
+        let vertex_shader = make_vertex_shader(VERTEX_SHADER_SOURCE, &mut info_log);
+        let fragment_shader = make_fragment_shader(FRAGMENT_SHADER_SOURCE, &mut info_log);
+
+        // Link Shaders
+        let shader_program = link_shaders(vertex_shader, fragment_shader, &mut info_log);
+
+        // [x,y,z]+
+        let vertices = [
+            -1.0, -1.0, 0.0, //
+            -0.5, -0.5, 0.0, //
+            0.5, -0.5, 0.0 as f32, //
+            0.0, 0.5, 0.0 as f32, //
+        ];
+
+        // [r,g,b]+
+        let colors = [
+            1.0 as f32, 0.0, 0.0, //
+            0.0, 1.0, 0.0, //
+            0.0, 1.0, 1.0, //
+            0.0, 0.0, 1.0, //
+        ];
+
+        //
+        let indexes = [1, 2, 3 as i32];
+
+        // allocate object ids
+        let mut vbo: u32 = 0;
+        let mut vao: u32 = 0;
+        let mut color_buffer_id: u32 = 0;
+        let mut index_buffer_id: u32 = 0;
+
+        // setup vertex array object and store id in vao
+        gl::GenVertexArrays(1, &mut vao);
+        // make vao current vertex array
+        gl::BindVertexArray(vao);
+
+        // VERTICES ------------------------------------------------------------------
+
+        gl::GenBuffers(1, &mut vbo); // setup vertex buffer object and store id in vbo
+        gl::BindBuffer(gl::ARRAY_BUFFER, vbo); // make vbo current array buffer
+
+        // creates and initializes a buffer object's data store
+        gl::BufferData(
+            // target
+            gl::ARRAY_BUFFER,
+            // size
+            (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+            // void *data
+            &vertices[0] as *const f32 as *const c_void,
+            // usage
+            gl::STATIC_DRAW,
+        );
+
+        // define an array of generic vertex attribute data for verts
+        gl::VertexAttribPointer(
+            0, // shader location
+            3, // with points made of 3 floats
+            gl::FLOAT,
+            gl::FALSE,   // not normalized
+            0,           // stride
+            ptr::null(), // offset
+        );
+
+        // Enable a generic vertex attribute array
+        gl::EnableVertexAttribArray(0);
+
+        // COLORS ------------------------------------------------------------------
+
+        gl::GenBuffers(1, &mut color_buffer_id); // setup color buffer object
+        gl::BindBuffer(gl::ARRAY_BUFFER, color_buffer_id); // make color buffer current array buffer
+
+        // creates and initializes a buffer object's data store
+        gl::BufferData(
+            // target
+            gl::ARRAY_BUFFER,
+            // size
+            (colors.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+            // void *data
+            &colors[0] as *const f32 as *const c_void,
+            // usage
+            gl::STATIC_DRAW,
+        );
+
+        // define an array of generic vertex attribute data for verts
+        gl::VertexAttribPointer(
+            1, // shader location
+            3, // with points made of 3 floats
+            gl::FLOAT,
+            gl::FALSE,   // not normalized
+            0,           // stride
+            ptr::null(), // offset
+        );
+
+        // Enable a generic vertex attribute array
+        gl::EnableVertexAttribArray(1);
+
+        // INDEXES ------------------------------------------------------------------
+        gl::GenBuffers(2, &mut index_buffer_id);
+        gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, index_buffer_id);
+
+        gl::BufferData(
+            // target
+            gl::ELEMENT_ARRAY_BUFFER,
+            // size
+            (indexes.len() * mem::size_of::<i32>()) as GLsizeiptr,
+            // void *data
+            &indexes[0] as *const i32 as *const c_void,
+            // usage
+            gl::STATIC_DRAW,
+        );
+
+        check_gl_error();
+        // Wireframe
+        //gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
+        (shader_program, vao, vbo)
+    }
+}
+
+unsafe fn check_gl_error() {
+    let err = gl::GetError();
+    if err != 0 {
+        println!("opengl err: {:?}", err);
+    }
+}
+
+// pub fn start() {
+//     let _font_data = std::include_bytes!("../media/font/FontAwesome.otf");
+//     let mut display = LinuxDisplay::new();
+//     let mut schem = Schematic::new();
+
+//     schem.add_wire();
+
+//     'running: loop {
+//         let cmds = vec![
+//             Command::IncrementFrame,
+//             Command::SetDrawColor(colors::BACKGROUND),
+//             Command::FillScreen,
+//             Command::SetDrawColor(colors::LIGHT_BLUE),
+//             Command::AddSegment(Segment::from_coords(10, 0, 10, 1000)),
+//             Command::SetDrawColor(colors::GREY),
+//         ];
+//         let mut last_cmds = vec![
+//             Command::SetDrawColor(if display.props.frame % 120 < 60 {
+//                 colors::CURSOR_LIGHT
+//             } else {
+//                 colors::CURSOR_DARK
+//             }),
+//             Command::RenderCursor,
+//         ];
+
+//         for event in display.get_events() {
+//             match event {
+//                 Event::Quit => {
+//                     break 'running;
+//                 }
+//                 Event::MouseMove(pt) => {
+//                     display.props.mouse_loc = pt;
+//                 }
+//                 _ => {}
+//             }
+//         }
+
+//         display.exec_cmds(cmds);
+//         display.exec_cmds(schem.render());
+//         display.exec_cmds(last_cmds);
+//         display.canvas.present();
+
+//         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
+//     }
+// }
+
+// unsafe fn compile_shader(shader_type: u32, err: &str, src: &str, info_log: &mut Vec<u8>) -> u32 {
+//     let shader = gl::CreateShader(shader_type);
+//     let c_str_vert = CString::new(src.as_bytes()).unwrap();
+//     gl::ShaderSource(shader, 1, &c_str_vert.as_ptr(), ptr::null());
+//     gl::CompileShader(shader);
+
+//     // Check for shader compilation errors
+//     check_shader_err(shader, "Compile Error: {:?}, {:?}", err, info_log);
+//     shader
+// }
 
 fn handle_window_event(window: &mut glfw::Window, event: glfw::WindowEvent) {
     match event {
@@ -151,175 +343,6 @@ unsafe fn link_shaders(vertex_shader: u32, fragment_shader: u32, info_log: &mut 
     shader_program
 }
 
-fn gl_setup() -> (u32, u32, u32, u32) {
-    // Thanks Matt!
-    // https://gist.github.com/matthewjberger/9da00592b472b50ec1e6b3238719264b
-
-    // -------------------------------------------------------
-    // Setup shader compilation checks
-    unsafe {
-        let mut success = i32::from(gl::FALSE);
-        let mut info_log: Vec<u8> = Vec::with_capacity(512);
-        info_log.set_len(512 - 1); // -1 to skip trialing null character
-
-        // Compile shaders
-        let vertex_shader = make_vertex_shader(VERTEX_SHADER_SOURCE, &mut info_log);
-        let fragment_shader = make_fragment_shader(FRAGMENT_SHADER_SOURCE, &mut info_log);
-
-        // Link Shaders
-        let shader_program = link_shaders(vertex_shader, fragment_shader, &mut info_log);
-
-        // [x,y,z]+
-        let vertices: [f32; 9] = [
-            -0.5, -0.5, 0.0, //
-            0.5, -0.5, 0.0, //
-            0.0, 0.5, 0.0, //
-        ];
-
-        // [r,g,b]+
-        let colors: [f32; 9] = [
-            1.0, 0.0, 0.0, //
-            0.0, 1.0, 1.0, //
-            0.0, 0.0, 1.0, //
-        ];
-
-        // allocate object ids
-        let (mut vbo, mut vao, mut color_buffer_id): (u32, u32, u32) = (0, 0, 0);
-        // setup vertex array object and store id in vao
-        gl::GenVertexArrays(1, &mut vao);
-        // make vao current vertex array
-        gl::BindVertexArray(vao);
-
-        // VERTICES ------------------------------------------------------------------
-
-        gl::GenBuffers(1, &mut vbo); // setup vertex buffer object and store id in vbo
-        gl::BindBuffer(gl::ARRAY_BUFFER, vbo); // make vbo current array buffer
-
-        // creates and initializes a buffer object's data store
-        gl::BufferData(
-            // target
-            gl::ARRAY_BUFFER,
-            // size
-            (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-            // void *data
-            &vertices[0] as *const f32 as *const c_void,
-            // usage
-            gl::STATIC_DRAW,
-        );
-
-        // define an array of generic vertex attribute data for verts
-        gl::VertexAttribPointer(
-            0, // shader location
-            3, // with points made of 3 floats
-            gl::FLOAT,
-            gl::FALSE,   // not normalized
-            0,           // stride
-            ptr::null(), // offset
-        );
-
-        // Enable a generic vertex attribute array
-        gl::EnableVertexAttribArray(0);
-
-        // COLORS ------------------------------------------------------------------
-
-        gl::GenBuffers(1, &mut color_buffer_id); // setup color buffer object
-        gl::BindBuffer(gl::ARRAY_BUFFER, color_buffer_id); // make color buffer current array buffer
-
-        // creates and initializes a buffer object's data store
-        gl::BufferData(
-            // target
-            gl::ARRAY_BUFFER,
-            // size
-            (colors.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-            // void *data
-            &colors[0] as *const f32 as *const c_void,
-            // usage
-            gl::STATIC_DRAW,
-        );
-
-        // define an array of generic vertex attribute data for verts
-        gl::VertexAttribPointer(
-            1, // shader location
-            3, // with points made of 3 floats
-            gl::FLOAT,
-            gl::FALSE,   // not normalized
-            0,           // stride
-            ptr::null(), // offset
-        );
-
-        // Enable a generic vertex attribute array
-        gl::EnableVertexAttribArray(1);
-        check_gl_error();
-        // Wireframe
-        //gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
-        (shader_program, vao, vbo, color_buffer_id)
-    }
-}
-
-unsafe fn check_gl_error() {
-    let err = gl::GetError();
-    if err != 0 {
-        println!("opengl err: {:?}", err);
-    }
-}
-
-// pub fn start() {
-//     let _font_data = std::include_bytes!("../media/font/FontAwesome.otf");
-//     let mut display = LinuxDisplay::new();
-//     let mut schem = Schematic::new();
-
-//     schem.add_wire();
-
-//     'running: loop {
-//         let cmds = vec![
-//             Command::IncrementFrame,
-//             Command::SetDrawColor(colors::BACKGROUND),
-//             Command::FillScreen,
-//             Command::SetDrawColor(colors::LIGHT_BLUE),
-//             Command::AddSegment(Segment::from_coords(10, 0, 10, 1000)),
-//             Command::SetDrawColor(colors::GREY),
-//         ];
-//         let mut last_cmds = vec![
-//             Command::SetDrawColor(if display.props.frame % 120 < 60 {
-//                 colors::CURSOR_LIGHT
-//             } else {
-//                 colors::CURSOR_DARK
-//             }),
-//             Command::RenderCursor,
-//         ];
-
-//         for event in display.get_events() {
-//             match event {
-//                 Event::Quit => {
-//                     break 'running;
-//                 }
-//                 Event::MouseMove(pt) => {
-//                     display.props.mouse_loc = pt;
-//                 }
-//                 _ => {}
-//             }
-//         }
-
-//         display.exec_cmds(cmds);
-//         display.exec_cmds(schem.render());
-//         display.exec_cmds(last_cmds);
-//         display.canvas.present();
-
-//         std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
-//     }
-// }
-
-// unsafe fn compile_shader(shader_type: u32, err: &str, src: &str, info_log: &mut Vec<u8>) -> u32 {
-//     let shader = gl::CreateShader(shader_type);
-//     let c_str_vert = CString::new(src.as_bytes()).unwrap();
-//     gl::ShaderSource(shader, 1, &c_str_vert.as_ptr(), ptr::null());
-//     gl::CompileShader(shader);
-
-//     // Check for shader compilation errors
-//     check_shader_err(shader, "Compile Error: {:?}, {:?}", err, info_log);
-//     shader
-// }
-
 type MyVertex = [f32; 2];
 
 fn build_path() -> VertexBuffers<MyVertex, u16> {
@@ -348,7 +371,7 @@ fn build_path() -> VertexBuffers<MyVertex, u16> {
     }
     // The tessellated geometry is ready to be uploaded to the GPU.
     println!(
-        " -- {} vertices {} indices",
+        " -- {} vertices {} indexes",
         geometry.vertices.len(),
         geometry.indices.len()
     );
