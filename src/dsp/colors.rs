@@ -17,6 +17,7 @@ pub const GRID_GRAY: Color = c(0xEE, 0xEE, 0xEE);
 pub const BACKGROUND: Color = c(250, 250, 250);
 pub const CURSOR_LIGHT: Color = c(190, 190, 190);
 pub const CURSOR_DARK: Color = c(23, 23, 23);
+pub const JADE_BLUE: Color = c(38, 139, 210);
 
 impl Color {
     pub fn as_sdl(&self) -> SdlColor {
