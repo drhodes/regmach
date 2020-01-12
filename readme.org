@@ -7,9 +7,23 @@
 - It would be neat to be able to mess around with an interactive
   version of the register machines.
 
+** How?
 - Would like to get a working build that uses opengl and rust
   cross-platform and on the browser with a non-trivial project.
 
+** Details.
+*** vector workflow with lyon and opengl
+**** Inkscape 
+- draw stuff in inkscape.
+- select the target objects
+- > Path > Combine
+- > Path > Object to Path
+- [F2] into node edit mode
+- (toolbar) insert new nodes into selected segments
+- (toolbar) make selected segments lines
 
-
+**** Programming
+- save the svg out to disk.  At this point, what you're looking for is
+  the path string, and it can be found at the bottom of the saved svg.
+- use lyon_svg to tesselate the path string (two lines of code).
 
