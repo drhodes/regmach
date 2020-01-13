@@ -1,4 +1,3 @@
-
 * A graphical register machine simulator
 ** What?
 - Of the ilk found in chapter 5 of SICP.
@@ -11,7 +10,31 @@
 - Would like to get a working build that uses opengl and rust
   cross-platform and on the browser with a non-trivial project.
 
+* Plan
+** Get hello triangle opengl running with wasm in the browser.
+Ok, this works, combining these two tutorials.
+https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler
+https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
+
+see root/src/wasm.  Still need to figure out nested crates (they are
+possible, but it looks like there are several approaches.
+
+** blogpost to explore implementing spacehash with specs
+
+** look into
+- font rendering, https://github.com/hecrj/wgpu_glyph
+- wasm rust
+  - https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
+  - https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
+
 ** Details.
+*** Entity Component System
+**** Components
+- Position
+- Draw
+- 
+
+
 *** vector workflow with lyon and opengl
 **** Inkscape 
 - draw stuff in inkscape.
@@ -26,4 +49,6 @@
 - save the svg out to disk.  At this point, what you're looking for is
   the path string, and it can be found at the bottom of the saved svg.
 - use lyon_svg to tesselate the path string (two lines of code).
+
+
 
