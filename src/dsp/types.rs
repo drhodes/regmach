@@ -48,7 +48,7 @@ pub enum Event {
 
 pub struct DisplayProperties {
     pub current_color: Color,
-    pub zoom: i32,
+    pub zoom: f32,
     pub mouse_loc: DspPoint,
     pub frame: u64,
 }

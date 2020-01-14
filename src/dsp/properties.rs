@@ -6,7 +6,7 @@ impl DisplayProperties {
         DisplayProperties {
             current_color: colors::BACKGROUND,
             mouse_loc: DspPoint::new(0, 0),
-            zoom: 0,
+            zoom: 0.0,
             frame: 0,
         }
     }
