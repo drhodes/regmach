@@ -17,6 +17,9 @@ debug: ## debug with gdb
 wasm-release: ## build the wasm release
 	cargo build --target=wasm32-wasi --release
 
+wasm-pack:
+	wasm-pack build wasm --target web
+
 wasmer-run: wasm-release
 	wasmer --dir=. target/wasm32-wasi/release/$(NAME).wasm
 
