@@ -13,10 +13,11 @@ pub mod dsp {
     pub mod colors;
     pub mod dsp_point;
     pub mod linux_display;
+    pub mod linux_display_opengl;
     pub mod properties;
     pub mod segment;
     pub mod types;
-
+    
     pub mod fragment_shaders;
     pub mod vertex_shaders;
 }

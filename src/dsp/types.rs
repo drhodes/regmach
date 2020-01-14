@@ -25,6 +25,8 @@ pub struct Color {
 /// High level interface commands supported by Display. The display has
 /// no memory (for now), so each frame is repainted.  This could prove
 /// to be slow, and should be one of the first things to optimize.
+
+// Maybe command should instead be REQUEST, and also have a RESPONSE.
 pub enum Command {
     /// Add a
     AddSegment(Segment),
@@ -37,6 +39,7 @@ pub enum Command {
     RenderCursor,
     Zoom(i32),
     IncrementFrame,
+    // UserDialog(Dialog) -> RESPONSE.
 }
 
 pub enum Event {
@@ -71,8 +74,16 @@ pub struct LinuxDisplay {
     pub props: DisplayProperties,
 }
 
-// -----------------------------------------------------------------------------
+// setup a channel to send messages to the display.
+//
+pub struct LinuxDisplayOpenGl {
+    pub ctx: glfw::Glfw,
+    // pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
+    // pub event_pump: sdl2::EventPump,
+    pub props: DisplayProperties,
+}
 
+// -----------------------------------------------------------------------------
 // pub struct App {
 //     display: dyn Display,
 // }
