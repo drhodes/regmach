@@ -7,8 +7,7 @@
   version of the register machines.
 
 ** How?
-- Would like to get a working build that uses opengl and rust
-  cross-platform and on the browser with a non-trivial project.
+- rust, wasm, js for the ui, opengl for the display.
 
 * Plan
 ** Get hello triangle opengl running with wasm in the browser.
