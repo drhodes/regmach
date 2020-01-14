@@ -1,7 +1,7 @@
 * A graphical register machine simulator
 ** What?
 - Of the ilk found in chapter 5 of SICP.
-
+  
 ** Why?
 - It would be neat to be able to mess around with an interactive
   version of the register machines.
@@ -22,8 +22,6 @@ possible, but it looks like there are several approaches.
 
 ** look into
 - font rendering, https://crates.io/crates/rusttype
-  
-
 
 - wasm rust
   - https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
@@ -34,7 +32,6 @@ possible, but it looks like there are several approaches.
 **** Components
 - Position
 - Draw
-- 
 
 
 *** vector workflow with lyon and opengl
