@@ -21,6 +21,7 @@ impl Schematic {
 
     pub fn add_wire(&mut self) {
         let wire = Wire {
+            id: 0, // TODO: need a nonce generator.
             segments: vec![
                 dsp::Segment::from_coords(10, 10, 40, 10),
                 dsp::Segment::from_coords(40, 10, 40, 40),

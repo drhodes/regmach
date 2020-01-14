@@ -1,4 +1,4 @@
-use crate::dsp::types::*;
+use crate::dsp::types as dsp;
 
 pub enum Value {
     Label(String),
@@ -7,22 +7,33 @@ pub enum Value {
     Bool,
 }
 
+// course grid
+pub struct Pos {
+    x: i32,
+    y: i32,
+}
+
+type EntityId = u32;
+
 pub struct Button {
+    pub id: EntityId,
     pub text: String,
 }
 
 pub struct Register {
+    pub id: EntityId,
     pub value: Value,
 }
 
 pub struct Wire {
-    pub segments: Vec<Segment>,
+    pub id: EntityId,
+    pub segments: Vec<dsp::Segment>,
 }
 
 pub trait Entity {
     // fn point_inside(self: &Self, p: &DspPoint) -> bool;
     // fn bounding_box(self: &Self) -> BBox;
-    fn render(self: &Self) -> Vec<Command>;
+    fn render(self: &Self) -> Vec<dsp::Command>;
 }
 
 pub struct Schematic {

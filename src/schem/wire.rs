@@ -3,7 +3,10 @@ use crate::schem::types::*;
 
 impl Wire {
     pub fn new(segs: Vec<Segment>) -> Wire {
-        Wire { segments: segs }
+        Wire {
+            id: 0, // TODO global nonce gen
+            segments: segs,
+        }
     }
 }
 
