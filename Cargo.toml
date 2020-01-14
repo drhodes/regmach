@@ -1,23 +1,7 @@
-[package]
-name = "regmach"
-version = "0.1.0"
-authors = ["Derek <physci@gmail.com>"]
-edition = "2018"
+[workspace]
 
-[dependencies]
-rusttype = "0.8.2"
-lyon = "0.15.3"
-lyon_svg = "0.15.0"
-rand = "0.7"
-
-[dependencies.gl]
-git = "https://github.com/bjz/gl-rs"
-
-[dependencies.glfw]
-git = "https://github.com/bjz/glfw-rs.git"
-
-[dependencies.sdl2]
-version = "0.32.0"
-default-features = false
-features = ["gfx"]
-
+members = [
+        "regmach",
+        "wasm",
+        "linux",
+]

@@ -1,5 +1,4 @@
 use crate::dsp::types::*;
-use sdl2::pixels::Color as SdlColor;
 
 const fn c(r: u8, g: u8, b: u8) -> Color {
     Color { r, g, b }
@@ -20,9 +19,6 @@ pub const CURSOR_DARK: Color = c(23, 23, 23);
 pub const JADE_BLUE: Color = c(38, 139, 210);
 
 impl Color {
-    pub fn as_sdl(&self) -> SdlColor {
-        SdlColor::RGB(self.r, self.g, self.b)
-    }
     pub fn as_gl(&self) -> (f32, f32, f32, f32) {
         (
             self.r as f32 / 255.0,
