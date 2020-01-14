@@ -22,7 +22,10 @@ possible, but it looks like there are several approaches.
 ** blogpost to explore implementing spacehash with specs
 
 ** look into
-- font rendering, https://github.com/hecrj/wgpu_glyph
+- font rendering, https://crates.io/crates/rusttype
+  
+
+
 - wasm rust
   - https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
   - https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
