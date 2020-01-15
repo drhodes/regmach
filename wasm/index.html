@@ -7,18 +7,29 @@
       }
     </style>
   </head>
-  <body bgcolor="#000">
-    <canvas id="canvas" height="150" width="150" />
+  <body bgcolor="#ff0">
     <script>
-      function resize() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize )
+      var send_blue = function() { console.log("before blue"); }
+      var send_red = function() { console.log("before red"); }
+    </script>
+    
+    <canvas id="canvas" height="300" width="300"></canvas>
+    <button id="button-blue" type="button">blue</button>
+    <p>asdf</p>
+
+    
+    <script>
+      // function resize() {
+      //     canvas.width = window.innerWidth;
+      //     canvas.height = window.innerHeight;
+      // }
+      //resize();
+      //window.addEventListener('resize', resize )
       
     </script> 
     <!-- Note the usage of `type=module` here as this is an ES6 module -->
+
+    
     <script type="module">
       // Use ES module import syntax to import functionality from the module
       // that we have compiled.
@@ -27,8 +38,9 @@
       // will "boot" the module and make it ready to use. Currently browsers
       // don't support natively imported WebAssembly as an ES module, but
       // eventually the manual initialization won't be required!
-      import init, { add } from './pkg/without_a_bundler.js';
+      import init, { add } from './pkg/without_a_bundler.js'
 
+      
       async function run() {
           // First up we need to actually load the wasm file, so we use the
           // default export to inform it where the wasm file is located on the
@@ -46,13 +58,20 @@
           await init();
 
           // And afterwards we can use all the functionality defined in wasm.
-          //const result = add(1, 2);
-          //wasm.start();
-          //console.log(`1 + 2 = ${result}`);
-          // if (result !== 3) {
-          //     throw new Error("wasm addition doesn't work!");
-          // }
-          //start();
+          const result = add(1, 2);
+          
+          
+          document.getElementById("button-blue").onclick = function() {
+              // push_event(["button-blue", "onclick"])
+              // console.log(event_queue);
+          }
+          
+          console.log(`1 + 2 = ${result}`);
+          if (result !== 3) {
+              throw new Error("wasm addition doesn't work!");
+          }
+          
+          
       }
 
       run();
