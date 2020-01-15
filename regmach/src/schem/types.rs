@@ -25,6 +25,15 @@ pub struct Register {
     pub value: Value,
 }
 
+pub struct Terminal {
+    pub id: EntityId,
+}
+
+pub struct UserModule {
+    pub name: String,
+    pub terms: Vec<Terminal>,
+}
+
 pub struct Wire {
     pub id: EntityId,
     pub segments: Vec<dsp::Segment>,
