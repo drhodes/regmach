@@ -1,13 +1,13 @@
 /// A DspPoint Display Point in display space, with screen
 /// coordinates, y-pos points down and x-pos points right.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct DspPoint {
     pub x: i32,
     pub y: i32,
 }
 
 ///
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Segment {
     pub p1: DspPoint,
     pub p2: DspPoint,
@@ -15,7 +15,7 @@ pub struct Segment {
 
 pub struct Err(String);
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Color {
     pub r: u8,
     pub g: u8,
@@ -27,6 +27,7 @@ pub struct Color {
 /// to be slow, and should be one of the first things to optimize.
 
 // Maybe command should instead be REQUEST, and also have a RESPONSE.
+#[derive(Debug)]
 pub enum Command {
     /// Add a
     AddSegment(Segment),
