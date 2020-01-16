@@ -1,7 +1,5 @@
 use crate::gl_util;
-use regmach::dsp::types::Command;
-use regmach::schem;
-use std::cell::Cell;
+use crate::types::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
@@ -11,26 +9,10 @@ use web_sys::WebGlRenderingContext;
 // Called when the wasm module is instantiated
 #[wasm_bindgen(start)]
 pub fn main() -> Result<(), JsValue> {
-    main2()
-}
-
-pub fn main2() -> Result<(), JsValue> {
-    // Use `web_sys`'s global `window` function to get a handle on the global
-    // window object.
-    let schematic = schem::types::Schematic::new();
-
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should have a document on window");
-    let canvas = document.get_element_by_id("canvas").unwrap();
-    let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>()?;
-
-    let context = canvas
-        .get_context("webgl")?
-        .unwrap()
-        .dyn_into::<WebGlRenderingContext>()?;
+    let dsp = WasmDisplay::new();
 
     let vert_shader = gl_util::compile_shader(
-        &context,
+        &dsp.ctx,
         WebGlRenderingContext::VERTEX_SHADER,
         r#"
         attribute vec4 position;
@@ -41,7 +23,7 @@ pub fn main2() -> Result<(), JsValue> {
     )?;
 
     let frag_shader = gl_util::compile_shader(
-        &context,
+        &dsp.ctx,
         WebGlRenderingContext::FRAGMENT_SHADER,
         r#"
         void main() {
@@ -50,13 +32,12 @@ pub fn main2() -> Result<(), JsValue> {
     "#,
     )?;
 
-    let program = gl_util::link_program(&context, &vert_shader, &frag_shader)?;
-    context.use_program(Some(&program));
-
+    let program = gl_util::link_program(&dsp.ctx, &vert_shader, &frag_shader)?;
+    dsp.ctx.use_program(Some(&program));
     let vertices: [f32; 9] = [-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
-
-    let buffer = context.create_buffer().ok_or("failed to create buffer")?;
-    context.bind_buffer(WebGlRenderingContext::ARRAY_BUFFER, Some(&buffer));
+    let buffer = dsp.ctx.create_buffer().ok_or("failed to create buffer")?;
+    dsp.ctx
+        .bind_buffer(WebGlRenderingContext::ARRAY_BUFFER, Some(&buffer));
 
     // Note that `Float32Array::view` is somewhat dangerous (hence the
     // `unsafe`!). This is creating a raw view into our module's
@@ -69,60 +50,33 @@ pub fn main2() -> Result<(), JsValue> {
 
     unsafe {
         let vert_array = js_sys::Float32Array::view(&vertices);
-        context.buffer_data_with_array_buffer_view(
+        dsp.ctx.buffer_data_with_array_buffer_view(
             WebGlRenderingContext::ARRAY_BUFFER,
             &vert_array,
             WebGlRenderingContext::STATIC_DRAW,
         );
     }
 
-    context.vertex_attrib_pointer_with_i32(0, 3, WebGlRenderingContext::FLOAT, false, 0, 0);
-    context.enable_vertex_attrib_array(0);
+    dsp.ctx
+        .vertex_attrib_pointer_with_i32(0, 3, WebGlRenderingContext::FLOAT, false, 0, 0);
+    dsp.ctx.enable_vertex_attrib_array(0);
 
-    context.clear_color(0.0, 0.0, 0.0, 1.0);
-    context.clear(WebGlRenderingContext::COLOR_BUFFER_BIT);
+    dsp.ctx.clear_color(0.0, 0.0, 0.0, 1.0);
+    dsp.ctx.clear(WebGlRenderingContext::COLOR_BUFFER_BIT);
 
-    context.draw_arrays(
+    dsp.ctx.draw_arrays(
         WebGlRenderingContext::TRIANGLES,
         0,
         (vertices.len() / 3) as i32,
     );
 
-    let context = Rc::new(context);
-    let pressed = Rc::new(Cell::new(false));
-
-    {
-        // https://rustwasm.github.io/docs/wasm-bindgen/examples/paint.html
-        // ATTENTION! This is how events are going to to work.
-        let context: Rc<WebGlRenderingContext> = context.clone();
-        let pressed: Rc<Cell<bool>> = pressed.clone();
-        let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
-            panic!("THIS WORKS!"); // TODO setup event channel here.
-            pressed.set(true);
-        }) as Box<dyn FnMut(_)>);
-        canvas.add_event_listener_with_callback("mousedown", closure.as_ref().unchecked_ref())?;
-        closure.forget();
-    }
+    let context = Rc::new(dsp.ctx);
 
     // https://rustwasm.github.io/wasm-bindgen/examples/request-animation-frame.html
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
 
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
-        // if i > 300 {
-        //     //body().set_text_content(Some("All done!"));
-
-        //     // Drop our handle to this closure so that it will get cleaned
-        //     // up once we return.
-        //     let _ = f.borrow_mut().take();
-        //     return;
-        // }
-
-        // Set the body's text content to how many times this
-        // requestAnimationFrame callback has fired.
-        //let text = format!("requestAnimationFrame has been called {} times.", i);
-        //body().set_text_content(Some(&text));
-
         context.clear_color(0.0, 0.0, 0.0, 1.0);
         context.clear(WebGlRenderingContext::COLOR_BUFFER_BIT);
 
