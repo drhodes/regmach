@@ -1,4 +1,3 @@
-pub mod com;
 #![feature(box_syntax)]
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
@@ -10,3 +9,5 @@ macro_rules! log {
 
 pub mod gl_util;
 pub mod start;
+pub mod types;
+pub mod wasm_display;
