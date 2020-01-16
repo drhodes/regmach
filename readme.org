@@ -15,9 +15,6 @@ Ok, this works, combining these two tutorials.
 https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler
 https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
 
-see root/src/wasm.  Still need to figure out nested crates (they are
-possible, but it looks like there are several approaches.
-
 ** blogpost to explore implementing spacehash with specs
 
 ** look into
