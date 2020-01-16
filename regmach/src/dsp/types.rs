@@ -43,11 +43,14 @@ pub enum Command {
     // UserDialog(Dialog) -> RESPONSE.
 }
 
+#[derive(Debug)]
 pub enum Event {
     Quit,
     MouseUp(DspPoint),
+    MouseDown(DspPoint),
     MouseDrag(DspPoint),
     MouseMove(DspPoint),
+    DeviceClick(u32),
 }
 
 pub struct DisplayProperties {
