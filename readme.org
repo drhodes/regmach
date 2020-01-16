@@ -28,6 +28,33 @@ possible, but it looks like there are several approaches.
   - https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
 
 ** Details.
+*** Common Types
+Translation types
+
+*** Interpreter Stack
+- Schematic oversees display.  Display doesn't know anything about
+schematic, other than schematic is expecting a stream of events from
+the display.  Schematic has its own integers based coordinate system
+which DISPLAY faithfully snaps devices to.
+
+**** Devices have terminals.
+**** Devices are entities.
+**** Wire are entities.
+**** Schematic establishes connections between terminals.
+**** Wires 
+***** Types of wires? 
+- Datapath wires
+- Controller wires
+- Cross domain, Controller to Datapath button activation wires.
+
+***** display
+translates scm_coords to gl_coords, draws the wires from the 
+***** schem
+
+lives in the schematic coordinate system
+
+
+
 *** Entity Component System
 **** Components
 - Position
