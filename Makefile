@@ -18,7 +18,7 @@ wasm-release: ## build the wasm release
 	cargo build --target=wasm32-wasi --release
 
 wasm-pack:
-	wasm-pack build wasm --target web
+	wasm-pack build browser --target web
 
 wasmer-run: wasm-release
 	wasmer --dir=. target/wasm32-wasi/release/$(NAME).wasm
@@ -44,7 +44,7 @@ clean: ## clean all the things
 	bash clean.bash
 
 work: ## open all files in editor		 
-	emacs -nw Makefile `find src -name '*rs'` Cargo.toml readme.org
+	emacs -nw Makefile `find . -name '*rs'` Cargo.toml readme.org
 
 # http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help

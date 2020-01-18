@@ -46,6 +46,7 @@ which DISPLAY faithfully snaps devices to.
 
 ***** display
 translates scm_coords to gl_coords, draws the wires from the 
+
 ***** schem
 
 lives in the schematic coordinate system

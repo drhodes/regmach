@@ -1,7 +1,7 @@
 [package]
-name = "without-a-bundler"
+name = "browser"
 version = "0.1.0"
-authors = ["The wasm-bindgen Developers"]
+authors = ["Derek Rhodes"]
 edition = "2018"
 
 [lib]
@@ -11,10 +11,15 @@ crate-type = ["cdylib"]
 js-sys = "0.3.35"
 wasm-bindgen = "0.2.58"
 lazy_static = "1.4.0"
+#glm = "0.2.3"
+#glm = {git = "https://github.com/drhodes/glm-rs"}
+#glm = {path="/home/derek/dev/rust-projects/glm-rs"}
+nalgebra-glm = "0.3"
 regmach = { path = "../regmach" }
 
+
 [dependencies.web-sys]
-version = "0.3.4"
+version = "0.3.35"
 features = [
   'Document',
   'Element',

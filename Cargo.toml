@@ -2,6 +2,6 @@
 
 members = [
         "regmach",
-        "wasm",
+        "browser",
         "linux",
 ]
