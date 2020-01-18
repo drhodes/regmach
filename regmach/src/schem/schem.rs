@@ -31,4 +31,5 @@ impl Schematic {
         };
         self.entities.push(box wire)
     }
+    pub fn add_tool(&mut self) {}
 }

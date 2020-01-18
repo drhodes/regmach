@@ -45,6 +45,9 @@ pub trait Entity {
     fn render(self: &Self) -> Vec<dsp::Command>;
 }
 
+// pub struct ToolBar {
+// }
+
 pub struct Schematic {
     pub entities: Vec<Box<dyn Entity>>, //fn add_entity(e: dyn Entity) -> Err;
 }

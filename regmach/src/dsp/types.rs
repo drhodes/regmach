@@ -34,12 +34,11 @@ pub enum Command {
     AddText(i16, i16, String),
     SetStrokeSize(u32),
     SetDrawColor(Color),
-    FilledCircle(DspPoint, u32), // center, radius
-    Circle(DspPoint, u32),       // center, radius
     FillScreen,
     RenderCursor,
     Zoom(i32),
     IncrementFrame,
+    DrawGrid(),
     // UserDialog(Dialog) -> RESPONSE.
 }
 
