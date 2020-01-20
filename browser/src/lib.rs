@@ -20,3 +20,4 @@ pub mod main_func;
 pub mod start;
 pub mod types;
 pub mod camera;
+pub mod mesh;
