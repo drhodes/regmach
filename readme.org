@@ -17,6 +17,16 @@ https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
 
 ** blogpost to explore implementing spacehash with specs
 
+** features
+*** schematic entities can be selected/deselected
+- uniform vars to make this happen
+
+
+*** lasso
+- look into shader effect for this.
+
+
+
 ** look into
 - font rendering, https://crates.io/crates/rusttype
 
