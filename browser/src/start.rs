@@ -1,4 +1,3 @@
-use crate::gl_util;
 use crate::types::*;
 use regmach::dsp::types as rdt;
 use regmach::dsp::types::Display;
@@ -6,16 +5,14 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{WebGlBuffer, WebGlRenderingContext};
 
 // Called when the wasm module is instantiated
 #[wasm_bindgen(start)]
-pub fn main() -> Result<(), JsValue> {
+pub fn main() -> Result<(), JsValue> {    
     let mut dsp: BrowserDisplay = BrowserDisplay::new();
     
     let verts: Vec<f32> = vec!(-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0);
     let mesh = Mesh::from_verts(&dsp, verts)?; 
-    let num_triangles = (mesh.vertices.len() / 3) as i32;
     
     // -----------------------------------------------------------------------------
     // MAIN EVENT LOOP
@@ -25,7 +22,12 @@ pub fn main() -> Result<(), JsValue> {
     let g = f.clone();
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
         dsp.props.frame_increment();
-        
+        if dsp.props.frame % 10 == 0 {
+            dsp.camera.zoom_out();
+            dsp.camera.move_left();
+        }
+
+            
         for ev in &dsp.get_events() {
             match ev {
                 rdt::Event::MouseDown(p) => {

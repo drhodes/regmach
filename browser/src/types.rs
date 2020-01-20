@@ -10,6 +10,7 @@ pub struct BrowserDisplay {
     pub ctx: WebGl2RenderingContext,
     pub events: Rc<RefCell<Vec<rdt::Event>>>,
     pub props: rdt::DisplayProperties,
+    pub camera: Camera,
 }
 
 pub type V3 = glm::Vec3;

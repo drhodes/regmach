@@ -49,6 +49,7 @@ pub enum Event {
     MouseDown(DspPoint),
     MouseDrag(DspPoint),
     MouseMove(DspPoint),
+    KeyDown(u32),
     DeviceClick(u32),
 }
 
