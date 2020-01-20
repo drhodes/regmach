@@ -1,14 +1,13 @@
 use regmach::dsp::types as rdt;
 use std::cell::RefCell;
 use std::rc::Rc;
-use web_sys::{WebGlRenderingContext, WebGlBuffer, WebGlProgram};
+use web_sys::{WebGl2RenderingContext, WebGlBuffer, WebGlProgram};
 use web_sys;
 use nalgebra_glm as glm;
-use crate::gl_util;
 
 pub struct BrowserDisplay {
     pub canvas: web_sys::HtmlCanvasElement,
-    pub ctx: WebGlRenderingContext,
+    pub ctx: WebGl2RenderingContext,
     pub events: Rc<RefCell<Vec<rdt::Event>>>,
     pub props: rdt::DisplayProperties,
 }

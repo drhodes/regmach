@@ -2,37 +2,42 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::WebGlRenderingContext;
+use web_sys::WebGl2RenderingContext;
+use web_sys;
 
-use crate::gl_util;
 use crate::types::*;
 use regmach::dsp::types as rdt;
-use regmach::dsp::types::Display;
 
 impl BrowserDisplay {
     // todo establish common error handling across project.
     pub fn new() -> BrowserDisplay {
+        log!("init: BrowserDisplay");
+
         let window = web_sys::window().expect("no global `window` exists");
         let document = window.document().expect("should have a document on window");
         let canvas = document.get_element_by_id("canvas").unwrap();
         let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
+        
+        let context = canvas.get_context("webgl2").unwrap().unwrap();
+        let context = context.dyn_into::<WebGl2RenderingContext>().unwrap();
+        log!("..init: got webgl2 context from browser");
 
-        let context = canvas
-            .get_context("webgl")
-            .unwrap()
-            .unwrap()
-            .dyn_into::<WebGlRenderingContext>()
-            .unwrap();
-
+        // TODO figure out how websys exposes the debugging info
+        // https://www.khronos.org/webgl/wiki/Debugging
+        
         let mut display = BrowserDisplay {
             canvas: canvas,
             ctx: context,
             events: Rc::new(RefCell::new(vec![])),
             props: rdt::DisplayProperties::new(),
+            camera: Camera::default(),
         };
+        
         display.setup_mousedown();
-        display.setup_mousemove();
-        log!("init: BrowserDisplay");
+        display.setup_mousemove(); 
+        display.setup_keydown();
+        
+        log!("init: BrowserDisplay succeeds");
         display
     }
     
@@ -48,6 +53,7 @@ impl BrowserDisplay {
             events.borrow_mut().push(rdt::Event::MouseDown(p));
             let msg = format!("events: {:?}", events);
             log!("{:?}", msg);
+            
         }) as Box<dyn FnMut(_)>);
 
         let msg = format!("events: {:?}", self.events);
@@ -98,9 +104,32 @@ impl BrowserDisplay {
         closure.forget();
     }
 
-    
-    
-    
+    fn setup_keydown(&mut self) {
+        let mut events = self.events.clone();
+
+        let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
+            log!("keyevent");
+            let code = event.key_code();
+            events.borrow_mut().push(rdt::Event::KeyDown(code));
+        }) as Box<dyn FnMut(_)>);
+
+        let msg = format!("events: {:?}", self.events);
+        log!("{:?}", msg);
+
+        let result = self
+            .canvas
+            .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref());
+        match result {
+            Err(msg) => {
+                log!("setup_keydown fails! {:?}", msg);
+                panic!("");
+            }
+            _ => {}
+        }
+
+        log!("init: setup_keydown");
+        closure.forget();
+    }
 }
 
 impl<'a> rdt::Display for BrowserDisplay {
