@@ -38,7 +38,7 @@ pub enum Command {
     RenderCursor,
     Zoom(i32),
     IncrementFrame,
-    DrawGrid(),
+    DrawGrid,
     // UserDialog(Dialog) -> RESPONSE.
 }
 

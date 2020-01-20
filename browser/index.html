@@ -3,6 +3,7 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
     <style type="text/css">
       body {
+          margin:0px;
           overflow:hidden;
       }
     </style>
@@ -13,7 +14,14 @@
       var send_red = function() { console.log("before red"); }
     </script>
     
-    <canvas id="canvas" height="300" width="300"></canvas>
+    <canvas id="canvas" height="512" width="512"></canvas>
+    
+    <script>
+      // prevent canvas from selecting.
+      canvas.onselectstart = function () { return false; }
+    </script>
+
+    
     <button id="button-blue" type="button">blue</button>
     
     <script>

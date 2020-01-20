@@ -10,4 +10,8 @@ impl DisplayProperties {
             frame: 0,
         }
     }
+
+    pub fn frame_increment(&mut self) {
+        self.frame += 1;
+    }
 }

@@ -98,31 +98,6 @@ impl BrowserDisplay {
         closure.forget();
     }
 
-    pub fn load_vertex_shader(&self) -> Result<web_sys::WebGlShader, String> {
-        gl_util::compile_shader(
-            &self.ctx,
-            WebGlRenderingContext::VERTEX_SHADER,
-            r#"
-            attribute vec4 position;
-            void main() {
-            gl_Position = position;
-            }
-            "#,
-        )
-    }
-
-    pub fn load_fragment_shader(&self) -> Result<web_sys::WebGlShader, String> {
-        gl_util::compile_shader(
-            &self.ctx,
-            WebGlRenderingContext::FRAGMENT_SHADER,
-            r#"
-            void main() {
-                gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
-            }
-             "#,
-        ) 
-    }
-
     
     
     
