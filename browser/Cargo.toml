@@ -26,14 +26,15 @@ features = [
   'EventTarget',
   'HtmlCanvasElement',
   'HtmlElement',
-  'MouseEvent',  
+  'MouseEvent',
+  'KeyboardEvent',
   'Node',
   'WebGlBuffer',
   'WebGlProgram',
-  'WebGlRenderingContext',
   'WebGlShader',
   'Window',
-  
+  'WebGl2RenderingContext',
+  'WebGlUniformLocation',
   'console',
   ]
 
