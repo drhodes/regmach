@@ -22,7 +22,10 @@ pub struct Camera {
     pub up: V3,
 }
 
-//pub type Vertex = [f32; 3];
+
+pub struct Grid {
+    pub mesh: Mesh,
+}
 
 pub struct Mesh {
     pub vertices: Vec<f32>,

@@ -5,10 +5,11 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
+use web_sys::{WebGl2RenderingContext, WebGlBuffer};
 
 // Called when the wasm module is instantiated
 #[wasm_bindgen(start)]
-pub fn main() -> Result<(), JsValue> {    
+pub fn main() -> Result<(), JsValue> {
     let mut dsp: BrowserDisplay = BrowserDisplay::new();
 
     let verts: Vec<f32> = vec![-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
@@ -28,33 +29,41 @@ pub fn main() -> Result<(), JsValue> {
     let g = f.clone();
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
         dsp.props.frame_increment();
-        if dsp.props.frame % 10 == 0 {
+        dsp.ctx.clear_color(0.98, 0.98, 0.98, 1.0);
+        dsp.ctx.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
+
+        if dsp.props.frame % 1 == 0 {
             dsp.camera.zoom_out();
-            dsp.camera.move_left();
+            dsp.camera.pan_right();
         }
 
-            
         for ev in &dsp.get_events() {
             match ev {
                 rdt::Event::MouseDown(p) => {
-                    log!("processing {:?}, vertex_buffer: {:?}", ev, mesh.vertex_buffer);
-                },
+                    log!(
+                        "processing {:?}, vertex_buffer: {:?}",
+                        ev,
+                        mesh.vertex_buffer
+                    );
+                }
                 rdt::Event::MouseMove(p) => {
                     log!("processing {:?}", ev);
-                },
+                }
                 _ => {
                     log!("unhandled event: {:?}", ev);
                 }
             }
         }
-        mesh.draw(&dsp);
+
+        grid.draw(&dsp);
+        mesh.draw_with_mode(&dsp, WebGl2RenderingContext::TRIANGLES);
+
         // Schedule another requestAnimationFrame callback.
         request_animation_frame(f.borrow().as_ref().unwrap());
     }) as Box<dyn FnMut()>));
-    
+
     request_animation_frame(g.borrow().as_ref().unwrap());
     Ok(())
-        
 }
 
 fn document() -> web_sys::Document {

@@ -18,35 +18,32 @@ impl Camera {
 
     pub fn default() -> Camera {
         Camera::new(V3::new(0f32, 0f32, -2f32), 1.0, 1.0, 0.0, 1000.0)
-                    
     }
 
     pub fn zoom_out(&mut self) {
-        if self.pos.z < -20.0 {
-            return
+        if self.pos.z < -50.0 {
+            return;
         }
         log!("pos.z: {:?}", self.pos.z);
-        self.pos.z *= 1.05;
+        self.pos.z -= 1.00;
+        self.pos.z = self.pos.z.floor();
     }
 
     pub fn zoom_in(&mut self) {
         if self.pos.z < 1.0 {
-            return
+            return;
         }
         log!("pos.z: {:?}", self.pos.z);
         self.pos.z /= 1.05;
+        self.pos.z = self.pos.z.floor();
     }
 
-    pub fn move_left(&mut self) {
-        self.pos.x -= 0.05;
+    pub fn pan_right(&mut self) {
+        self.pos.x -= 0.1;
     }
 
-    
-    
     pub fn get_view_projection(&self) -> glm::Mat4 {
         let look = glm::look_at(&self.pos, &(self.pos + self.forward), &self.up);
         self.perspective * look
     }
-
-    
 }
