@@ -14,7 +14,7 @@
       var send_red = function() { console.log("before red"); }
     </script>
     
-    <canvas id="canvas" height="512" width="512"></canvas>
+    <canvas id="canvas" height="800" width="800"></canvas>
     
     <script>
       // prevent canvas from selecting.
@@ -25,12 +25,12 @@
     <button id="button-blue" type="button">blue</button>
     
     <script>
-      // function resize() {
-      //     canvas.width = window.innerWidth;
-      //     canvas.height = window.innerHeight;
-      // }
-      //resize();
-      //window.addEventListener('resize', resize )
+      function resize() {
+           canvas.width = window.innerWidth;
+           canvas.height = window.innerHeight;
+      }
+      // resize();
+      // window.addEventListener('resize', resize )
       
     </script> 
     <!-- Note the usage of `type=module` here as this is an ES6 module -->
