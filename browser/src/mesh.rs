@@ -5,9 +5,14 @@ use crate::gl_util;
 use crate::types::*;
 
 impl Mesh {
-    pub fn from_verts(dsp: &BrowserDisplay, verts: Vec<f32>) -> Result<Mesh, String>{
-        let vert_shader = Mesh::load_vertex_shader(dsp)?;
-        let frag_shader = Mesh::load_fragment_shader(dsp)?;
+    pub fn from_verts(
+        dsp: &BrowserDisplay,
+        verts: Vec<f32>,
+        vert_shadertxt: &str,
+        frag_shadertxt: &str,
+    ) -> Result<Mesh, String> {
+        let vert_shader = Mesh::load_vertex_shader(dsp, vert_shadertxt)?;
+        let frag_shader = Mesh::load_fragment_shader(dsp, frag_shadertxt)?;
         let program = gl_util::link_program(&dsp.ctx, &vert_shader, &frag_shader)?;
         let buffer: WebGlBuffer = dsp.ctx.create_buffer().ok_or("failed to create buffer")?;
         
@@ -79,19 +84,17 @@ impl Mesh {
         );
     }
 
-    pub fn load_vertex_shader(dsp: &BrowserDisplay) -> Result<web_sys::WebGlShader, String> {
-        gl_util::compile_shader(
-            &dsp.ctx,
-            WebGl2RenderingContext::VERTEX_SHADER,
-            include_str!("../shaders/basic-shader.vs"),
-        )
+    pub fn load_vertex_shader(
+        dsp: &BrowserDisplay,
+        shadertxt: &str,
+    ) -> Result<web_sys::WebGlShader, String> {
+        gl_util::compile_shader(&dsp.ctx, WebGl2RenderingContext::VERTEX_SHADER, shadertxt)
     }
 
-    pub fn load_fragment_shader(dsp: &BrowserDisplay) -> Result<web_sys::WebGlShader, String> {
-        gl_util::compile_shader(
-            &dsp.ctx,
-            WebGl2RenderingContext::FRAGMENT_SHADER,
-            include_str!("../shaders/basic-shader.fs"),
-        ) 
+    pub fn load_fragment_shader(
+        dsp: &BrowserDisplay,
+        shadertxt: &str,
+    ) -> Result<web_sys::WebGlShader, String> {
+        gl_util::compile_shader(&dsp.ctx, WebGl2RenderingContext::FRAGMENT_SHADER, shadertxt)
     }
 }

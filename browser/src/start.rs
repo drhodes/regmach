@@ -10,10 +10,16 @@ use wasm_bindgen::JsCast;
 #[wasm_bindgen(start)]
 pub fn main() -> Result<(), JsValue> {    
     let mut dsp: BrowserDisplay = BrowserDisplay::new();
-    
-    let verts: Vec<f32> = vec!(-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0);
-    let mesh = Mesh::from_verts(&dsp, verts)?; 
-    
+
+    let verts: Vec<f32> = vec![-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
+    let mesh = Mesh::from_verts(
+        &dsp,
+        verts,
+        include_str!("../shaders/basic-shader.vs"),
+        include_str!("../shaders/basic-shader.fs"),
+    )?;
+    let grid = Grid::new(&dsp)?;
+
     // -----------------------------------------------------------------------------
     // MAIN EVENT LOOP
     // https://rustwasm.github.io/wasm-bindgen/examples/request-animation-frame.html
