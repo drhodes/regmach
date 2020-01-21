@@ -1,76 +1,101 @@
 * A graphical register machine simulator
 ** What?
-- Of the ilk found in chapter 5 of SICP.
+- Of the ilk found in [[https://sarabander.github.io/sicp/html/5_002e1.xhtml#g_t5_002e1_002e2][chapter 5 of SICP.]]
   
 ** Why?
 - It would be neat to be able to mess around with an interactive
   version of the register machines.
+- To get experience with rust in the browser.
 
 ** How?
-- rust, wasm, js for the ui, opengl for the display.
+- rust, wasm, js for the ui, webgl for the display.
 
-* Plan
-** Get hello triangle opengl running with wasm in the browser.
-Ok, this works, combining these two tutorials.
-https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler
-https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
+** Plan
+*** Get hello triangle opengl running with wasm in the browser.
+Ok, combine these two tutorials.
+- [[https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler][without-a-bundler]]
+- [[https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/][webgl]]
 
-** blogpost to explore implementing spacehash with specs
+*** features
+**** schematic entities can be selected/deselected
+- uniform vars boolean to fragment shader, i.e. if selectedP then red
+  else blue.
 
-** features
-*** schematic entities can be selected/deselected
-- uniform vars to make this happen
-
-
-*** lasso
+**** lasso - selection mode (at the Display level)
 - look into shader effect for this.
+- use a translucent box, 
+- state machine? 
 
+**** simulation (schem level)
+- this is later.
 
-
-** look into
+*** look into
 - font rendering, https://crates.io/crates/rusttype
 
 - wasm rust
   - https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
   - https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
 
-** Details.
-*** Common Types
-Translation types
 
-*** Interpreter Stack
-- Schematic oversees display.  Display doesn't know anything about
+*** Details.
+**** KeyboardEvents
+Unless the webgl canvas is focused, keyboard events will not be generated.
+
+**** Interpreter Layers
+Schematic oversees display.  Display doesn't know anything about
 schematic, other than schematic is expecting a stream of events from
-the display.  Schematic has its own integers based coordinate system
+the display. Schematic has its own integer based coordinate system
 which DISPLAY faithfully snaps devices to.
+
+
+**** Display
+***** disciplines
+****** coordinates
+Will not use screen coordinates for anything, will immediately project
+onto webgl x-y-0 plane, where the schematic lives, and everything will
+use webgl coords.
+
+**** Entity Rotations
+***** easy option 
+compute the rotated meshes, append them to their associated vertex
+buffer and store the index of the start of each rotated mesh in a
+lookup table. 
+
+So for a triangle mesh T, 
+- T_north is the unrotated mesh
+- T_west is T_north rotated 90 degrees counter clockwise.
+- ...
+- T_flip_horizontal
+- T_flip_vertical
+
+There are eight possible mesh orientations. Cache all of them with
+their bounding boxes.  By the way lyon tesselation has all the
+triangles needed for collisions after the spatial hash is checked.
 
 **** Devices have terminals.
 **** Devices are entities.
-**** Wire are entities.
+**** Wires are entities.
 **** Schematic establishes connections between terminals.
+
 **** Wires 
+Need to think about wire/mouse collisions.
+
 ***** Types of wires? 
 - Datapath wires
 - Controller wires
 - Cross domain, Controller to Datapath button activation wires.
 
-***** display
-translates scm_coords to gl_coords, draws the wires from the 
+**** Schematic will share webgl's coordinate system.
 
-***** schem
+**** Camera
+***** coordinate transformation
+camera can calculate screen-to-world coordinates.  I think it's as
+easy as squeezing the display coords down to x∊{-1, 1}, y∊{-1, 1},
+then flipping y and multiplying row vec [display_x, display_y, 0, 0]
+by the view matrix.
 
-lives in the schematic coordinate system
-
-
-
-*** Entity Component System
-**** Components
-- Position
-- Draw
-
-
-*** vector workflow with lyon and opengl
-**** Inkscape 
+**** vector workflow with lyon and opengl
+***** Inkscape 
 - draw stuff in inkscape.
 - select the target objects
 - > Path > Combine
@@ -79,10 +104,12 @@ lives in the schematic coordinate system
 - (toolbar) insert new nodes into selected segments
 - (toolbar) make selected segments lines
 
-**** Programming
+***** Programming
 - save the svg out to disk.  At this point, what you're looking for is
   the path string, and it can be found at the bottom of the saved svg.
 - use lyon_svg to tesselate the path string (two lines of code).
+
+
 
 
 
