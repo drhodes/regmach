@@ -49,6 +49,11 @@ impl Mesh {
         dsp.ctx.clear_color(c, 1.0 - c, c, 1.0);
         dsp.ctx.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
         dsp.ctx.use_program(Some(&self.shader_program));
+        dsp.ctx.bind_buffer(
+            WebGl2RenderingContext::ARRAY_BUFFER,
+            Some(&self.vertex_buffer),
+        );
+        dsp.ctx.vertex_attrib_pointer_with_i32(0, 3, WebGl2RenderingContext::FLOAT, false, 0, 0);
 
         let uniform_loc = dsp.ctx.get_uniform_location(&self.shader_program, "mvp");
         let is_transposed = false;
