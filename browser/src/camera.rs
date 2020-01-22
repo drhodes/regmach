@@ -17,27 +17,39 @@ impl Camera {
     }
 
     pub fn default() -> Camera {
-        Camera::new(V3::new(0f32, 0f32, -2f32), 1.0, 1.0, 0.0, 1000.0)
+        Camera::new(V3::new(0f32, 0f32, -10f32), 1.0, 1.0, 0.0, 1000.0)
     }
 
     pub fn zoom_out(&mut self) {
-        if self.pos.z < -50.0 {
-            return;
-        }
-        self.pos.z -= 1.00;
-        self.pos.z = self.pos.z.floor();
+        if self.pos.z < -50.0 { return; }
+        self.pos.z -= 2.00;
     }
 
     pub fn zoom_in(&mut self) {
-        if self.pos.z < 1.0 {
-            return;
-        }
-        self.pos.z /= 1.05;
-        self.pos.z = self.pos.z.floor();
+        if self.pos.z > -1.0 { return; }
+        self.pos.z /= 2.00;
     }
-
+    
+    #[inline(always)]
+    fn zoom_factor(&self) -> f32 {
+        -self.pos.z * 0.1357
+    }
+    
     pub fn pan_right(&mut self) {
-        self.pos.x -= 0.1;
+        self.pos.x += self.zoom_factor();
+    }
+    pub fn pan_left(&mut self) {
+        self.pos.x -= self.zoom_factor();
+    }
+    pub fn pan_up(&mut self) {
+        self.pos.y -= self.zoom_factor();
+    }
+    pub fn pan_down(&mut self) {
+        self.pos.y += self.zoom_factor();
+    }
+    pub fn center(&mut self) {
+        self.pos.y = 0.0;
+        self.pos.x = 0.0;
     }
 
     pub fn get_view_projection(&self) -> glm::Mat4 {
