@@ -28,6 +28,7 @@ features = [
   'HtmlElement',
   'MouseEvent',
   'KeyboardEvent',
+  'DomWindowResizeEventDetail',
   'Node',
   'WebGlBuffer',
   'WebGlProgram',

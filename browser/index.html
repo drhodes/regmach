@@ -14,11 +14,11 @@
       var send_red = function() { console.log("before red"); }
     </script>
     
-    <canvas id="canvas" height="800" width="800"></canvas>
+    <canvas id="canvas" tabindex='1' height="800" width="800"></canvas>
     
     <script>
       // prevent canvas from selecting.
-      canvas.onselectstart = function () { return false; }
+      //canvas.onselectstart = function () { return false; }
     </script>
 
     
@@ -26,9 +26,11 @@
     
     <script>
       function resize() {
-           canvas.width = window.innerWidth;
-           canvas.height = window.innerHeight;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;          
       }
+      canvas.focus();
+
       // resize();
       // window.addEventListener('resize', resize )
       

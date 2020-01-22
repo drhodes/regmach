@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::WebGl2RenderingContext;
 use web_sys;
+use std::collections::HashMap;
 
 use crate::types::*;
 use regmach::dsp::types as rdt;
@@ -35,9 +36,9 @@ impl BrowserDisplay {
             mesh_store: HashMap::new(),
         };
         
+        display.setup_keydown();
         display.setup_mousedown();
         display.setup_mousemove(); 
-        display.setup_keydown();
         
         log!("init: BrowserDisplay succeeds");
         display
@@ -76,7 +77,7 @@ impl BrowserDisplay {
 
     fn setup_mousemove(&mut self) {
         let mut events = self.events.clone();
-
+        
         let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
             log!("mousemove");
             let p = rdt::DspPoint {
@@ -132,6 +133,37 @@ impl BrowserDisplay {
         log!("init: setup_keydown");
         closure.forget();
     }
+
+
+    fn setup_onresize(&mut self) {
+        let mut events = self.events.clone();
+
+        let closure = Closure::wrap(Box::new(move |event: web_sys::Window| {
+            log!("onresize");
+            // let code = event.key_code();
+            // events.borrow_mut().push(rdt::Event::Onresize(code));
+        }) as Box<dyn FnMut(_)>);
+
+        let msg = format!("events: {:?}", self.events);
+        log!("{:?}", msg);
+
+        let result = self
+            .canvas
+            .add_event_listener_with_callback("onresize", closure.as_ref().unchecked_ref());
+        match result {
+            Err(msg) => {
+                log!("setup_onresize fails! {:?}", msg);
+                panic!("");
+            }
+            _ => {}
+        }
+
+        log!("init: setup_onresize");
+        closure.forget();
+    }
+
+    
+    
 }
 
 impl<'a> rdt::Display for BrowserDisplay {
