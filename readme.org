@@ -11,10 +11,6 @@
 - rust, wasm, js for the ui, webgl for the display.
 
 ** Plan
-*** Get hello triangle opengl running with wasm in the browser.
-Ok, combine these two tutorials.
-- [[https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler][without-a-bundler]]
-- [[https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/][webgl]]
 
 *** features
 **** schematic entities can be selected/deselected
@@ -29,12 +25,65 @@ Ok, combine these two tutorials.
 **** simulation (schem level)
 - this is later.
 
+**** Devices Types 
+- Register
+- Stack
+  - can stacks be constructed in regmach as linked registers?
+- Constant
+- Function Blocks
+  - Addition
+  - Subtraction, going to need to disambiguate on non-commutative
+    functions, OR perhaps not => fix the operation order and mandate
+    the user FLIP device.  Offer popup help window that displays the
+    operation like "A-B".
+   
+  - Multiplication..
+  - Mux?
+
+- Label
+- String?, 
+- Array?
+- List?
+- Clock?
+- I/O devices
+  - LED simulator
+
+**** Meta Register Machines?
+What if register machines themselves could be stored in registers?
+
+
+**** Device Unfolding?
+Neat, perhaps at a certain zoom level the underlying implemention is shown mini-map style.
+
+**** Regions
+consider distinctly colored backgrounds for each region type.
+
+***** Datapath
+where the datapath entities live
+
+***** Controller
+where the controller entities live
+
+***** PatchBoard
+An interface for wires between datapath and controller. For now
+development environment is all schematic and no assembly language, so
+having a tidy wire bundle in the middle should keep the rats nest at
+bay. TODO: storyboard this in inkscape.
+
+
+
+
 *** look into
 - font rendering, https://crates.io/crates/rusttype
 
 - wasm rust
   - https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
   - https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
+
+*** Get hello triangle opengl running with wasm in the browser.
+Ok, combine these two tutorials.
+- [[https://github.com/rustwasm/wasm-bindgen/tree/master/examples/without-a-bundler][without-a-bundler]]
+- [[https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/][webgl]]
 
 
 *** Details.
