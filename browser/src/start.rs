@@ -33,29 +33,40 @@ pub fn main() -> Result<(), JsValue> {
         dsp.ctx.clear_color(0.98, 0.98, 0.98, 1.0);
         dsp.ctx.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
 
-        if dsp.props.frame % 1 == 0 {
-            dsp.camera.zoom_out();
-            dsp.camera.pan_right();
-        }
+        // if dsp.props.frame % 1 == 0 {
+        //     dsp.camera.zoom_out();
+        //     dsp.camera.pan_right();
+        // }
 
         for ev in &dsp.get_events() {
-            log!("event: {:?}", ev);
-            
-            // match ev {
-            //     rdt::Event::MouseDown(p) => {
-            //         log!(
-            //             "processing {:?}, vertex_buffer: {:?}",
-            //             ev,
-            //             mesh.vertex_buffer
-            //         );
-            //     }
-            //     rdt::Event::MouseMove(p) => {
-            //         log!("processing {:?}", ev);
-            //     }
-            //     _ => {
-            //         log!("unhandled event: {:?}", ev);
-            //     }
-            // }
+            match ev {
+                rdt::Event::MouseDown(p) => {
+                    log!(
+                        "processing {:?}, vertex_buffer: {:?}",
+                        ev,
+                        mesh.vertex_buffer
+                    );
+                }
+                rdt::Event::MouseMove(p) => {
+                    log!("processing {:?}", ev);
+                }
+                rdt::Event::KeyDown(code) => {                    
+                    log!("processing {:?}", ev);
+                    match *code {
+                        65 => dsp.camera.pan_left(),
+                        68 => dsp.camera.pan_right(),
+                        87 => dsp.camera.pan_up(),
+                        83 => dsp.camera.pan_down(),
+                        33 => dsp.camera.zoom_in(),
+                        34 => dsp.camera.zoom_out(),
+                        67 => dsp.camera.center(),
+                        _ => log!("unhandled key {:?}", ev),
+                    }
+                }
+                _ => {
+                    log!("unhandled event: {:?}", ev);
+                }
+            }
         }
 
         grid.draw(&dsp);
