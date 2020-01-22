@@ -19,14 +19,15 @@ pub fn main() -> Result<(), JsValue> {
         include_str!("../shaders/basic-shader.vs"),
         include_str!("../shaders/basic-shader.fs"),
     )?;
+    
     let grid = Grid::new(&dsp)?;
-
     // -----------------------------------------------------------------------------
     // MAIN EVENT LOOP
     // https://rustwasm.github.io/wasm-bindgen/examples/request-animation-frame.html
 
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
+    
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
         dsp.props.frame_increment();
         dsp.ctx.clear_color(0.98, 0.98, 0.98, 1.0);
@@ -38,21 +39,23 @@ pub fn main() -> Result<(), JsValue> {
         }
 
         for ev in &dsp.get_events() {
-            match ev {
-                rdt::Event::MouseDown(p) => {
-                    log!(
-                        "processing {:?}, vertex_buffer: {:?}",
-                        ev,
-                        mesh.vertex_buffer
-                    );
-                }
-                rdt::Event::MouseMove(p) => {
-                    log!("processing {:?}", ev);
-                }
-                _ => {
-                    log!("unhandled event: {:?}", ev);
-                }
-            }
+            log!("event: {:?}", ev);
+            
+            // match ev {
+            //     rdt::Event::MouseDown(p) => {
+            //         log!(
+            //             "processing {:?}, vertex_buffer: {:?}",
+            //             ev,
+            //             mesh.vertex_buffer
+            //         );
+            //     }
+            //     rdt::Event::MouseMove(p) => {
+            //         log!("processing {:?}", ev);
+            //     }
+            //     _ => {
+            //         log!("unhandled event: {:?}", ev);
+            //     }
+            // }
         }
 
         grid.draw(&dsp);

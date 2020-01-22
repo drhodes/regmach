@@ -70,24 +70,3 @@ pub trait Display {
     fn exec_cmds(self: &mut Self, cmds: Vec<Command>);
     fn get_events(self: &mut Self) -> Vec<Event>;
 }
-
-// pub struct LinuxDisplay {
-//     pub ctx: sdl2::Sdl,
-//     pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
-//     pub event_pump: sdl2::EventPump,
-//     pub props: DisplayProperties,
-// }
-
-// setup a channel to send messages to the display.
-//
-// pub struct LinuxDisplayOpenGl {
-//     pub ctx: glfw::Glfw,
-//     // pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
-//     // pub event_pump: sdl2::EventPump,
-//     pub props: DisplayProperties,
-// }
-
-// -----------------------------------------------------------------------------
-// pub struct App {
-//     display: dyn Display,
-// }

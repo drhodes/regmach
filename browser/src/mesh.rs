@@ -50,6 +50,8 @@ impl Mesh {
         Ok(mesh)
     }
 
+
+    /// Mode is LINES, TRIANGLE, TRIANGLESTRIP, etc.
     pub fn draw_with_mode(&self, dsp: &BrowserDisplay, mode: u32) {
         let n = (dsp.props.frame % 255) as f32;
         let c = n / (255 as f32);

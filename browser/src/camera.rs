@@ -24,7 +24,6 @@ impl Camera {
         if self.pos.z < -50.0 {
             return;
         }
-        log!("pos.z: {:?}", self.pos.z);
         self.pos.z -= 1.00;
         self.pos.z = self.pos.z.floor();
     }
@@ -33,7 +32,6 @@ impl Camera {
         if self.pos.z < 1.0 {
             return;
         }
-        log!("pos.z: {:?}", self.pos.z);
         self.pos.z /= 1.05;
         self.pos.z = self.pos.z.floor();
     }
