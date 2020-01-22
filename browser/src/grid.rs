@@ -12,8 +12,8 @@ impl Grid {
         let mut verts: Vec<f32> = vec![];
         // here are 4000 verts, which
         for i in -1000..1000 {
-            let (x1, y1, z1) = (i as f32, -1000.0, 0.1);
-            let (x2, y2, z2) = (i as f32, 1000.0, 0.1);
+            let (x1, y1, z1) = (i as f32, -1000.0, 0.0001);
+            let (x2, y2, z2) = (i as f32, 1000.0, 0.0001);
             verts.push(x1);
             verts.push(y1);
             verts.push(z1);
@@ -37,6 +37,7 @@ impl Grid {
         Ok(Grid { mesh })
     }
     pub fn draw(&self, dsp: &BrowserDisplay) {
+        
         self.mesh.draw_with_mode(dsp, WebGl2RenderingContext::LINES);
     }
 }
