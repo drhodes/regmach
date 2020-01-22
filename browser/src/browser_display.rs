@@ -31,6 +31,8 @@ impl BrowserDisplay {
             events: Rc::new(RefCell::new(vec![])),
             props: rdt::DisplayProperties::new(),
             camera: Camera::default(),
+            mesh_nonce: 0,
+            mesh_store: HashMap::new(),
         };
         
         display.setup_mousedown();
