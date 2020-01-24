@@ -10,10 +10,6 @@ crate-type = ["cdylib"]
 [dependencies]
 js-sys = "0.3.35"
 wasm-bindgen = "0.2.58"
-lazy_static = "1.4.0"
-#glm = "0.2.3"
-#glm = {git = "https://github.com/drhodes/glm-rs"}
-#glm = {path="/home/derek/dev/rust-projects/glm-rs"}
 nalgebra-glm = "0.3"
 regmach = { path = "../regmach" }
 
@@ -34,6 +30,8 @@ features = [
   'WebGlProgram',
   'WebGlShader',
   'Window',
+  'Event',
+  'HtmlDivElement', # for canvas wrapper.
   'WebGl2RenderingContext',
   'WebGlUniformLocation',
   'console',
