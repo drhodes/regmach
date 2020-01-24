@@ -5,7 +5,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{WebGl2RenderingContext, WebGlBuffer};
+use web_sys::WebGl2RenderingContext;
 
 // Called when the wasm module is instantiated
 #[wasm_bindgen(start)]
@@ -19,7 +19,7 @@ pub fn main() -> Result<(), JsValue> {
         include_str!("../shaders/basic-shader.vs"),
         include_str!("../shaders/basic-shader.fs"),
     )?;
-    
+
     let grid = Grid::new(&dsp)?;
     // -----------------------------------------------------------------------------
     // MAIN EVENT LOOP
@@ -27,18 +27,16 @@ pub fn main() -> Result<(), JsValue> {
 
     let f = Rc::new(RefCell::new(None));
     let g = f.clone();
-    
+
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
+        dsp.update_canvas_size_todo();
         dsp.props.frame_increment();
         dsp.ctx.clear_color(0.98, 0.98, 0.98, 1.0);
         dsp.ctx.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
-
-        // if dsp.props.frame % 1 == 0 {
-        //     dsp.camera.zoom_out();
-        //     dsp.camera.pan_right();
-        // }
-
         for ev in &dsp.get_events() {
+            // there should be an event driven way adjust the canvas size.
+            // dsp.watch_for_window_resize_awful();
+            //
             match ev {
                 rdt::Event::MouseDown(p) => {
                     log!(
@@ -50,9 +48,9 @@ pub fn main() -> Result<(), JsValue> {
                     log!("scmpoint: {:?}", scmpoint);
                 }
                 rdt::Event::MouseMove(p) => {
-                    log!("processing {:?}", ev);
+                    //log!("processing {:?}", ev);
                 }
-                rdt::Event::KeyDown(code) => {                    
+                rdt::Event::KeyDown(code) => {
                     log!("processing {:?}", ev);
                     match *code {
                         65 => dsp.camera.pan_left(),
@@ -86,10 +84,6 @@ fn document() -> web_sys::Document {
     window()
         .document()
         .expect("should have a document on window")
-}
-
-fn body() -> web_sys::HtmlElement {
-    document().body().expect("document should have a body")
 }
 
 fn window() -> web_sys::Window {

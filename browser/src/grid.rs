@@ -1,9 +1,7 @@
-use crate::gl_util;
 use crate::types::*;
-use nalgebra_glm as glm;
 use wasm_bindgen::prelude::*;
 use web_sys;
-use web_sys::{WebGl2RenderingContext, WebGlBuffer};
+use web_sys::WebGl2RenderingContext;
 
 // this should be able to be done completely in a shader.
 
@@ -37,7 +35,6 @@ impl Grid {
         Ok(Grid { mesh })
     }
     pub fn draw(&self, dsp: &BrowserDisplay) {
-        
         self.mesh.draw_with_mode(dsp, WebGl2RenderingContext::LINES);
     }
 }

@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
-use web_sys::{WebGl2RenderingContext, WebGlBuffer, WebGlProgram};
 use web_sys;
+use web_sys::{WebGl2RenderingContext, WebGlBuffer, WebGlProgram};
 
 use nalgebra_glm as glm;
 
