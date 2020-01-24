@@ -19,7 +19,9 @@ pub struct Mesh {
 }
 
 pub struct BrowserDisplay {
+    pub window: web_sys::Window,
     pub canvas: web_sys::HtmlCanvasElement,
+    pub wrapper: web_sys::HtmlDivElement,
     pub ctx: WebGl2RenderingContext,
     pub events: Rc<RefCell<Vec<rdt::Event>>>,
     pub props: rdt::DisplayProperties,
@@ -32,6 +34,10 @@ pub type V3 = glm::Vec3;
 
 pub struct Camera {
     pub pos: V3,
+    pub fov: f32,
+    pub aspect: f32,
+    pub z_near: f32,
+    pub z_far: f32,
     pub perspective: glm::Mat4x4,
     pub forward: V3,
     pub up: V3,
@@ -40,3 +46,7 @@ pub struct Camera {
 pub struct Grid {
     pub mesh: Mesh,
 }
+
+// some small numbers
+pub const EPSILON32: f32 = 1e-12;
+pub const EPSILON64: f64 = 1e-12;

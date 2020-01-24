@@ -46,6 +46,8 @@ pub fn main() -> Result<(), JsValue> {
                         ev,
                         mesh.vertex_buffer
                     );
+                    let scmpoint = dsp.screen_to_schematic(p.x as u32, p.y as u32);
+                    log!("scmpoint: {:?}", scmpoint);
                 }
                 rdt::Event::MouseMove(p) => {
                     log!("processing {:?}", ev);
