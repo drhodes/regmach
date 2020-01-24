@@ -17,10 +17,17 @@
 - uniform vars boolean to fragment shader, i.e. if selectedP then red
   else blue.
 
-**** lasso - selection mode (at the Display level)
+***** Modes
+****** Lasso - selection mode (at the Display level)
 - look into shader effect for this.
 - use a translucent box, 
 - state machine? 
+
+****** Module Edit
+- add terminal to module
+- rename terminal
+- 
+
 
 **** simulation (schem level)
 - this is later.
