@@ -27,10 +27,8 @@ impl Mesh {
         };
 
         dsp.ctx.use_program(Some(&mesh.shader_program));
-        dsp.ctx.bind_buffer(
-            WebGl2RenderingContext::ARRAY_BUFFER,
-            Some(&mesh.vertex_buffer),
-        );
+        dsp.ctx
+            .bind_buffer(WebGl2RenderingContext::ARRAY_BUFFER, Some(&mesh.vertex_buffer));
 
         unsafe {
             // Note that `Float32Array::view` is somewhat dangerous
@@ -61,10 +59,8 @@ impl Mesh {
     /// Mode is LINES, TRIANGLE, TRIANGLESTRIP, etc.
     pub fn draw_with_mode(&self, dsp: &BrowserDisplay, mode: u32) {
         dsp.ctx.use_program(Some(&self.shader_program));
-        dsp.ctx.bind_buffer(
-            WebGl2RenderingContext::ARRAY_BUFFER,
-            Some(&self.vertex_buffer),
-        );
+        dsp.ctx
+            .bind_buffer(WebGl2RenderingContext::ARRAY_BUFFER, Some(&self.vertex_buffer));
         dsp.ctx
             .vertex_attrib_pointer_with_i32(0, 3, WebGl2RenderingContext::FLOAT, false, 0, 0);
 
@@ -74,14 +70,10 @@ impl Mesh {
 
         dsp.ctx
             .uniform_matrix4fv_with_f32_array(uniform_loc.as_ref(), is_transposed, m.as_slice());
-        dsp.ctx
-            .draw_arrays(mode, 0, (self.vertices.len() / 3) as i32);
+        dsp.ctx.draw_arrays(mode, 0, (self.vertices.len() / 3) as i32);
     }
 
-    pub fn load_vertex_shader(
-        dsp: &BrowserDisplay,
-        shadertxt: &str,
-    ) -> Result<web_sys::WebGlShader, String> {
+    pub fn load_vertex_shader(dsp: &BrowserDisplay, shadertxt: &str) -> Result<web_sys::WebGlShader, String> {
         gl_util::compile_shader(&dsp.ctx, WebGl2RenderingContext::VERTEX_SHADER, shadertxt)
     }
 
