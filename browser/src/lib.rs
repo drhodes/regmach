@@ -3,7 +3,7 @@
 // #![allow(unused_imports)]
 // #![allow(unused_variables)]
 
-// #![allow(warnings)]
+#![allow(warnings)]
 #![feature(box_syntax)]
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
@@ -24,3 +24,4 @@ pub mod camera;
 pub mod mesh;
 pub mod grid;
 pub mod font_mesh;
+pub mod text;

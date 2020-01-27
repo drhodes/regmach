@@ -60,8 +60,11 @@ pub struct Grid {
 //     pub meshes: Vec<Mesh>,
 // }
 
-// pub struct Text {
-// }
+pub struct Text {
+    pub color: rdt::Color,
+    pub text: String,
+    pub font_mesh: FontMesh,
+}
 
 // some small numbers
 pub const EPSILON32: f32 = 1e-12;

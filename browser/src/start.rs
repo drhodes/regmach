@@ -5,7 +5,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::WebGl2RenderingContext;
+use web_sys::WebGl2RenderingContext as GL;
 
 use rusttype::{point, FontCollection, PositionedGlyph, Scale};
 use std::io::Write;
@@ -24,108 +24,18 @@ pub fn main() -> Result<(), JsValue> {
     )?;
 
     let grid = Grid::new(&dsp)?;
-
-    // -----------------------------------------------------------------------------
-    // this font code is from
-    // the rusttype/simple example.
-
     let font_data = include_bytes!("../../media/font/routed-gothic.ttf");
     let collection = FontCollection::from_bytes(font_data as &[u8]).unwrap_or_else(|e| {
         panic!("error constructing a FontCollection from bytes: {}", e);
     });
+    
     let font = collection
         .into_font() // only succeeds if collection consists of one font
         .unwrap_or_else(|e| {
             panic!("error turning FontCollection into a Font: {}", e);
         });
 
-    // Desired font pixel height
-    let height: f32 = 80.4; // to get 80 chars across (fits most terminals); adjust as desired
-    let pixel_height = height.ceil() as usize;
-
-    // 2x scale in x direction to counter the aspect ratio of monospace characters.
-    let scale = Scale {
-        x: height * 1.5,
-        y: height * 1.5,
-    };
-
-    // The origin of a line of text is at the baseline (roughly where
-    // non-descending letters sit). We don't want to clip the text, so we shift
-    // it down with an offset when laying it out. v_metrics.ascent is the
-    // distance between the baseline and the highest edge of any glyph in
-    // the font. That's enough to guarantee that there's no clipping.
-    let v_metrics = font.v_metrics(scale);
-    let offset = point(0.0, v_metrics.ascent);
-
-    // Glyphs to draw for "RustType". Feel free to try other strings.
-    let glyphs: Vec<PositionedGlyph<'_>> = font.layout("MEM[31:0]", scale, offset).collect();
-
-    // Find the most visually pleasing width to display
-    let width = glyphs
-        .iter()
-        .rev()
-        .map(|g| g.position().x as f32 + g.unpositioned().h_metrics().advance_width)
-        .next()
-        .unwrap_or(0.0)
-        .ceil() as usize;
-    
-    let mut text_verts: Vec<f32> = vec![];
-    let mut colors: Vec<f32> = vec![];
-    let (red,green, blue, _) = regmach::dsp::colors::JADE_BLUE.as_gl();
-
-    
-    for glyph in glyphs.iter().rev() {
-        // this clone is just to appease the rust type checker, it will be going away.
-        if let Some(bb) = glyph.pixel_bounding_box() {
-            // let mpx = (bb.max.x - bb.min.x) as f32;
-            // let mpy = (bb.max.y - bb.min.y) as f32;
-            
-            glyph.draw(|x, y, v| {
-                if v > 0.3 {
-                    // v should be in the range 0.0 to 1.0
-                    let scale = 0.01;
-                    let x = -((x as i32 + bb.min.x) as f32 * scale);
-                    let y = -((y as i32 + bb.min.y) as f32 * scale);
-
-                    // need to draw two small triangles per pixel.
-                    // or use different mesh routines with four points using gl_fan.
-                    // but for now 6 points per font pixel.
-                    // what coordinate system is being used?
-                    let bl = [x, y, 0.0];
-                    let br = [x + scale, y, 0.0];
-                    let tl = [x, y + scale, 0.0];
-                    let tr = [x + scale, y + scale, 0.0];
-
-                    
-                    let co = [red, green, blue, v];
-
-                    // triangle 1: counter clockwise: bl br tl
-                    text_verts.extend(bl.iter());
-                    colors.extend(co.iter());
-                    text_verts.extend(br.iter());
-                    colors.extend(co.iter());
-                    text_verts.extend(tl.iter());
-                    colors.extend(co.iter()); 
-                   
-                    //triangle 2: counter clockwise: tl br tr
-                    text_verts.extend(tl.iter());
-                    colors.extend(co.iter());
-                    text_verts.extend(br.iter());
-                    colors.extend(co.iter());
-                    text_verts.extend(tr.iter());
-                    colors.extend(co.iter());
-                }
-            })
-        }
-    }
-     
-    let text_mesh = FontMesh::from_verts(
-        &dsp,
-        text_verts,
-        colors,
-        include_str!("../shaders/font-shader.vs"),
-        include_str!("../shaders/font-shader.fs"),
-    )?;
+    let text = Text::new(&dsp, regmach::dsp::colors::JADE_BLUE, &font, "DRAM[63:0]")?;
 
     // -----------------------------------------------------------------------------
     // MAIN EVENT LOOP
@@ -138,7 +48,7 @@ pub fn main() -> Result<(), JsValue> {
         dsp.update_canvas_size_todo();
         dsp.props.frame_increment();
         dsp.ctx.clear_color(0.98, 0.98, 0.98, 1.0);
-        dsp.ctx.clear(WebGl2RenderingContext::COLOR_BUFFER_BIT);
+        dsp.ctx.clear(GL::COLOR_BUFFER_BIT);
         for ev in &dsp.get_events() {
             // there should be an event driven way adjust the canvas size.
             // dsp.watch_for_window_resize_awful();
@@ -172,14 +82,8 @@ pub fn main() -> Result<(), JsValue> {
         }
 
         grid.draw(&dsp);
-        mesh.draw_with_mode(&dsp, WebGl2RenderingContext::TRIANGLES);
-        text_mesh.draw_with_mode(&dsp, WebGl2RenderingContext::TRIANGLES);
-
-        // ------------------------------------------------------------------
-        // font rendering
-        /*
-         */
-        // ------------------------------------------------------------------
+        mesh.draw_with_mode(&dsp, GL::TRIANGLES);
+        text.draw_with_mode(&dsp, GL::TRIANGLES);
 
         // Schedule another requestAnimationFrame callback.
         request_animation_frame(f.borrow().as_ref().unwrap());

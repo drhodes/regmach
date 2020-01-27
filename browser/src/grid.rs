@@ -1,7 +1,7 @@
 use crate::types::*;
 use wasm_bindgen::prelude::*;
 use web_sys;
-use web_sys::WebGl2RenderingContext;
+use web_sys::WebGl2RenderingContext as GL;
 
 // this should be able to be done completely in a shader.
 
@@ -13,10 +13,13 @@ impl Grid {
         Ok(Grid{meshes})
     }
 
-    pub fn make_grid_mesh(dsp: &BrowserDisplay, level_of_detail: usize, extent: i32) -> Result<Mesh, String>  {
+    pub fn make_grid_mesh(dsp: &BrowserDisplay,
+                          granularity: usize,
+                          extent: i32) -> Result<Mesh, String>  {
+        
         let mut verts: Vec<f32> = vec![];
         
-        for i in (-extent .. extent).step_by(level_of_detail) {            
+        for i in (-extent .. extent).step_by(granularity) {            
             let (x1, y1, z1) = (i as f32, -extent as f32, 0.0001);
             let (x2, y2, z2) = (i as f32, extent as f32, 0.0001);
             verts.push(x1);
@@ -39,6 +42,7 @@ impl Grid {
             verts,
             include_str!("../shaders/grid-shader.vs"),
             include_str!("../shaders/grid-shader.fs"),
+            
         )
     }
     
@@ -47,11 +51,11 @@ impl Grid {
         let zoom = dsp.camera.pos.z.abs();
         
         if zoom < 36.0 {
-            self.meshes[0].draw_with_mode(dsp, WebGl2RenderingContext::LINES);
+            self.meshes[0].draw_with_mode(dsp, GL::LINES);
         } else if zoom < 100.0 {
-            self.meshes[1].draw_with_mode(dsp, WebGl2RenderingContext::LINES);
+            self.meshes[1].draw_with_mode(dsp, GL::LINES);
         } else  {
-            self.meshes[2].draw_with_mode(dsp, WebGl2RenderingContext::LINES);
+            self.meshes[2].draw_with_mode(dsp, GL::LINES);
         }
     }
 }

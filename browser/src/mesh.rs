@@ -1,7 +1,17 @@
 use crate::gl_util;
 use crate::types::*;
+use regmach::dsp::types as rdt;
+use regmach::dsp::types::Display;
+use std::cell::RefCell;
+use std::rc::Rc;
+use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
 use web_sys;
-use web_sys::{WebGl2RenderingContext, WebGlBuffer};
+use web_sys::WebGl2RenderingContext as GL;
+use web_sys::WebGlBuffer;
+
+use rusttype::{point, FontCollection, PositionedGlyph, Scale};
+use std::io::Write;
 
 impl Mesh {
     pub fn from_verts(
@@ -28,7 +38,7 @@ impl Mesh {
 
         dsp.ctx.use_program(Some(&mesh.shader_program));
         dsp.ctx
-            .bind_buffer(WebGl2RenderingContext::ARRAY_BUFFER, Some(&mesh.vertex_buffer));
+            .bind_buffer(GL::ARRAY_BUFFER, Some(&mesh.vertex_buffer));
 
         unsafe {
             // Note that `Float32Array::view` is somewhat dangerous
@@ -44,14 +54,14 @@ impl Mesh {
             let vert_array = js_sys::Float32Array::view(&mesh.vertices);
 
             dsp.ctx.buffer_data_with_array_buffer_view(
-                WebGl2RenderingContext::ARRAY_BUFFER,
+                GL::ARRAY_BUFFER,
                 &vert_array,
-                WebGl2RenderingContext::STATIC_DRAW,
+                GL::STATIC_DRAW,
             );
         }
 
         dsp.ctx
-            .vertex_attrib_pointer_with_i32(0, 3, WebGl2RenderingContext::FLOAT, false, 0, 0);
+            .vertex_attrib_pointer_with_i32(0, 3, GL::FLOAT, false, 0, 0);
         dsp.ctx.enable_vertex_attrib_array(0);
         Ok(mesh)
     }
@@ -60,9 +70,9 @@ impl Mesh {
     pub fn draw_with_mode(&self, dsp: &BrowserDisplay, mode: u32) {
         dsp.ctx.use_program(Some(&self.shader_program));
         dsp.ctx
-            .bind_buffer(WebGl2RenderingContext::ARRAY_BUFFER, Some(&self.vertex_buffer));
+            .bind_buffer(GL::ARRAY_BUFFER, Some(&self.vertex_buffer));
         dsp.ctx
-            .vertex_attrib_pointer_with_i32(0, 3, WebGl2RenderingContext::FLOAT, false, 0, 0);
+            .vertex_attrib_pointer_with_i32(0, 3, GL::FLOAT, false, 0, 0);
 
         let uniform_loc = dsp.ctx.get_uniform_location(&self.shader_program, "mvp");
         let is_transposed = false;
@@ -70,17 +80,21 @@ impl Mesh {
 
         dsp.ctx
             .uniform_matrix4fv_with_f32_array(uniform_loc.as_ref(), is_transposed, m.as_slice());
-        dsp.ctx.draw_arrays(mode, 0, (self.vertices.len() / 3) as i32);
+        dsp.ctx
+            .draw_arrays(mode, 0, (self.vertices.len() / 3) as i32);
     }
 
-    pub fn load_vertex_shader(dsp: &BrowserDisplay, shadertxt: &str) -> Result<web_sys::WebGlShader, String> {
-        gl_util::compile_shader(&dsp.ctx, WebGl2RenderingContext::VERTEX_SHADER, shadertxt)
+    pub fn load_vertex_shader(
+        dsp: &BrowserDisplay,
+        shadertxt: &str,
+    ) -> Result<web_sys::WebGlShader, String> {
+        gl_util::compile_shader(&dsp.ctx, GL::VERTEX_SHADER, shadertxt)
     }
 
     pub fn load_fragment_shader(
         dsp: &BrowserDisplay,
         shadertxt: &str,
     ) -> Result<web_sys::WebGlShader, String> {
-        gl_util::compile_shader(&dsp.ctx, WebGl2RenderingContext::FRAGMENT_SHADER, shadertxt)
+        gl_util::compile_shader(&dsp.ctx, GL::FRAGMENT_SHADER, shadertxt)
     }
 }
