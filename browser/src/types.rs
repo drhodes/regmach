@@ -18,6 +18,15 @@ pub struct Mesh {
     pub vertex_buffer: WebGlBuffer,
 }
 
+pub struct FontMesh {
+    pub vertices: Vec<f32>,
+    pub colors: Vec<f32>,
+    // pub indices: Vec<u16>,
+    pub shader_program: WebGlProgram,
+    pub vertex_buffer: WebGlBuffer,
+    pub color_buffer: WebGlBuffer,
+}
+
 pub struct BrowserDisplay {
     pub window: web_sys::Window,
     pub canvas: web_sys::HtmlCanvasElement,
@@ -46,6 +55,13 @@ pub struct Camera {
 pub struct Grid {
     pub mesh: Mesh,
 }
+
+// pub struct CompoundMesh {
+//     pub meshes: Vec<Mesh>,
+// }
+
+// pub struct Text {
+// }
 
 // some small numbers
 pub const EPSILON32: f32 = 1e-12;

@@ -26,8 +26,6 @@
 ****** Module Edit
 - add terminal to module
 - rename terminal
-- 
-
 
 **** simulation (schem level)
 - this is later.
@@ -78,12 +76,28 @@ having a tidy wire bundle in the middle should keep the rats nest at
 bay. TODO: storyboard this in inkscape.
 
 
+**** font rendering, https://crates.io/crates/rusttype. 
+
+***** Which font? 
+Found a good one called routed-gothic, inspired by the block diagrams
+of the early computer age.
+
+***** Rendering the font
+There are a bunch of ways to do this. There isn't going to be a ton of
+text on the screen, so for now, inefficient is OK.  Currently using
+two triangles per rasterized pixel.
+
+***** pixels triangles.
+
+
 
 
 *** look into
-- font rendering, https://crates.io/crates/rusttype
 
-- wasm rust
+
+  
+
+**** wasm rust
   - https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
   - https://rustwasm.github.io/wasm-bindgen/exbuild/webgl/
 
@@ -145,10 +159,23 @@ Need to think about wire/mouse collisions.
 
 **** Camera
 ***** coordinate transformation
-camera can calculate screen-to-world coordinates.  I think it's as
-easy as squeezing the display coords down to x∊{-1, 1}, y∊{-1, 1},
-then flipping y and multiplying row vec [display_x, display_y, 0, 0]
-by the view matrix.
+// generate viewport coordinates from screen coordinates.
+pub fn screen_to_viewport(&self, mouse_x: u32, mouse_y: u32) -> (f32, f32) 
+// The joys of mouse picking.
+// https://stackoverflow.com/questions/29997209/opengl-c-mouse-ray-picking-glmunproject
+fn screen_to_world_ray(&self, mouse_x: u32, mouse_y: u32) -> glm::Vec4 
+// cast a ray from the camera into the world down to the schematic grid.
+// maybe there's a better way to do it.
+pub fn screen_to_schematic(&self, mouse_x: u32, mouse_y: u32) -> glm::Vec2
+
+
+***** Meshes
+- Lyon uses a vertex array and an index array, so that should be the
+  same for all meshes.
+
+- Compound Meshes
+  Some entities will have more than one mesh, See browser/types::CompoundMesh
+
 
 **** vector workflow with lyon and opengl
 ***** Inkscape 
