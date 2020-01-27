@@ -25,9 +25,9 @@
       var send_blue = function() { console.log("before blue"); }
       var send_red = function() { console.log("before red"); }
     </script>
-
+    <div id="dream"><center><H1>DREAM OF FASTER COMPUTERS</H1></center></div>
     <div id="canvas_wrapper" class="wrapper">
-      <canvas id="canvas" tabindex='1' height="800" width="800"></canvas>
+      <canvas id="canvas" tabindex='1' height="1" width="1"></canvas>
     </div>
     
     <script>
@@ -75,6 +75,7 @@
           if (result !== 3) {
               throw new Error("wasm addition doesn't work!");
           }
+          dream.remove() // (don't really remove the dream though)
       }
       
       run();
