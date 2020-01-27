@@ -7,11 +7,18 @@ use web_sys::WebGl2RenderingContext;
 
 impl Grid {
     pub fn new(dsp: &BrowserDisplay) -> Result<Grid, JsValue> {
+        let meshes = vec!(Grid::make_grid_mesh(dsp, 1, 1024)?,
+                          Grid::make_grid_mesh(dsp, 2, 1024)?,
+                          Grid::make_grid_mesh(dsp, 4, 1024)?);
+        Ok(Grid{meshes})
+    }
+
+    pub fn make_grid_mesh(dsp: &BrowserDisplay, level_of_detail: usize, extent: i32) -> Result<Mesh, String>  {
         let mut verts: Vec<f32> = vec![];
-        // here are 4000 verts, which
-        for i in -1000..1000 {
-            let (x1, y1, z1) = (i as f32, -1000.0, 0.0001);
-            let (x2, y2, z2) = (i as f32, 1000.0, 0.0001);
+        
+        for i in (-extent .. extent).step_by(level_of_detail) {            
+            let (x1, y1, z1) = (i as f32, -extent as f32, 0.0001);
+            let (x2, y2, z2) = (i as f32, extent as f32, 0.0001);
             verts.push(x1);
             verts.push(y1);
             verts.push(z1);
@@ -26,15 +33,25 @@ impl Grid {
             verts.push(x2);
             verts.push(z2);
         }
-        let mesh = Mesh::from_verts(
+        
+        Mesh::from_verts(
             &dsp,
             verts,
             include_str!("../shaders/grid-shader.vs"),
             include_str!("../shaders/grid-shader.fs"),
-        )?;
-        Ok(Grid { mesh })
+        )
     }
+    
     pub fn draw(&self, dsp: &BrowserDisplay) {
-        self.mesh.draw_with_mode(dsp, WebGl2RenderingContext::LINES);
+        log!("zoom: {:?}", dsp.camera.pos.z);
+        let zoom = dsp.camera.pos.z.abs();
+        
+        if zoom < 36.0 {
+            self.meshes[0].draw_with_mode(dsp, WebGl2RenderingContext::LINES);
+        } else if zoom < 100.0 {
+            self.meshes[1].draw_with_mode(dsp, WebGl2RenderingContext::LINES);
+        } else  {
+            self.meshes[2].draw_with_mode(dsp, WebGl2RenderingContext::LINES);
+        }
     }
 }

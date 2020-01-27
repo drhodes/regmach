@@ -53,7 +53,7 @@ pub struct Camera {
 }
 
 pub struct Grid {
-    pub mesh: Mesh,
+    pub meshes: Vec<Mesh>,
 }
 
 // pub struct CompoundMesh {
