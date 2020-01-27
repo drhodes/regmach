@@ -41,6 +41,9 @@ impl BrowserDisplay {
             mesh_store: HashMap::new(),
         };
 
+        display.ctx.enable(WebGl2RenderingContext::BLEND);
+        display.ctx.blend_func(WebGl2RenderingContext::SRC_ALPHA, WebGl2RenderingContext::ONE_MINUS_SRC_ALPHA);
+        
         display.setup_keydown();
         display.setup_mousedown();
         display.setup_mousemove();
