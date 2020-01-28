@@ -47,7 +47,6 @@ impl Grid {
     }
     
     pub fn draw(&self, dsp: &BrowserDisplay) {
-        log!("zoom: {:?}", dsp.camera.pos.z);
         let zoom = dsp.camera.pos.z.abs();
         
         if zoom < 36.0 {
