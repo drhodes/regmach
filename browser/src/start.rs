@@ -36,7 +36,7 @@ pub fn main() -> Result<(), JsValue> {
         });
 
     let text = Text::new(&dsp, regmach::dsp::colors::JADE_BLUE, &font, "DRAM[63:0]")?;
-
+    
     // -----------------------------------------------------------------------------
     // MAIN EVENT LOOP
     // https://rustwasm.github.io/wasm-bindgen/examples/request-animation-frame.html
@@ -51,7 +51,6 @@ pub fn main() -> Result<(), JsValue> {
         for ev in &dsp.get_events() {
             // there should be an event driven way adjust the canvas size.
             // dsp.watch_for_window_resize_awful();
-            //
             match ev {
                 rdt::Event::MouseDown(p) => {
                     log!("processing {:?}, vertex_buffer: {:?}", ev, mesh.vertex_buffer);

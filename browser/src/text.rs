@@ -20,23 +20,10 @@ impl Text {
         font: &rusttype::Font<'_>,
         text: &str,
     ) -> Result<Text, String> {
-        // -----------------------------------------------------------------------------
-        // this font code is from
-        // the rusttype/simple example.
-        // let collection = FontCollection::from_bytes(font_data as &[u8]).unwrap_or_else(|e| {
-        //     panic!("error constructing a FontCollection from bytes: {}", e);
-        // });
-        // let font = collection
-        //     .into_font() // only succeeds if collection consists of one font
-        //     .unwrap_or_else(|e| {
-        //         panic!("error turning FontCollection into a Font: {}", e);
-        //     });
-
         // Desired font pixel height
-        let height: f32 = 80.4; // to get 80 chars across (fits most terminals); adjust as desired
+        let height: f32 = 80.4;        
         let pixel_height = height.ceil() as usize;
 
-        // 2x scale in x direction to counter the aspect ratio of monospace characters.
         let scale = Scale {
             x: height * 1.5,
             y: height * 1.5,
@@ -64,14 +51,11 @@ impl Text {
 
         let mut text_verts: Vec<f32> = vec![];
         let mut colors: Vec<f32> = vec![];
-        let (red, green, blue, _) = regmach::dsp::colors::JADE_BLUE.as_gl();
+        let (red, green, blue, _) = color.as_gl(); 
 
         for glyph in glyphs.iter().rev() {
             // this clone is just to appease the rust type checker, it will be going away.
             if let Some(bb) = glyph.pixel_bounding_box() {
-                // let mpx = (bb.max.x - bb.min.x) as f32;
-                // let mpy = (bb.max.y - bb.min.y) as f32;
-
                 glyph.draw(|x, y, v| {
                     if v > 0.3 {
                         // v should be in the range 0.0 to 1.0
@@ -90,6 +74,9 @@ impl Text {
 
                         let co = [red, green, blue, v];
 
+                        // this is inefficient, TODO (just send one
+                        // color per triangle)
+                        
                         // triangle 1: counter clockwise: bl br tl
                         text_verts.extend(bl.iter());
                         colors.extend(co.iter());
@@ -129,5 +116,5 @@ impl Text {
     pub fn draw_with_mode(&self, dsp: &BrowserDisplay, mode: u32) {
         self.font_mesh.draw_with_mode(dsp, mode);
     }
-
 }
+

@@ -22,9 +22,7 @@ pub struct Color {
     pub b: u8,
 }
 
-/// High level interface commands supported by Display. The display has
-/// no memory (for now), so each frame is repainted.  This could prove
-/// to be slow, and should be one of the first things to optimize.
+/// High level interface commands supported by Display. 
 
 // Maybe command should instead be REQUEST, and also have a RESPONSE.
 #[derive(Debug)]
@@ -69,4 +67,6 @@ pub trait Display {
     fn exec(self: &mut Self, cmd: &Command);
     fn exec_cmds(self: &mut Self, cmds: Vec<Command>);
     fn get_events(self: &mut Self) -> Vec<Event>;
+    // fn undo
+    // fn redo
 }

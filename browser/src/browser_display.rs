@@ -6,7 +6,7 @@ use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys;
-use web_sys::WebGl2RenderingContext;
+use web_sys::WebGl2RenderingContext as GL;
 
 use crate::types::*;
 use regmach::dsp::types as rdt;
@@ -21,7 +21,7 @@ impl BrowserDisplay {
         let canvas: web_sys::HtmlCanvasElement =
             canvas.dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
         let context = canvas.get_context("webgl2").unwrap().unwrap();
-        let context = context.dyn_into::<WebGl2RenderingContext>().unwrap();
+        let context = context.dyn_into::<GL>().unwrap();
         let wrapper = document.get_element_by_id("canvas_wrapper").unwrap();
         let wrapper = wrapper.dyn_into::<web_sys::HtmlDivElement>().unwrap();
         log!("..init: got webgl2 context from browser");
@@ -41,8 +41,8 @@ impl BrowserDisplay {
             mesh_store: HashMap::new(),
         };
 
-        display.ctx.enable(WebGl2RenderingContext::BLEND);
-        display.ctx.blend_func(WebGl2RenderingContext::SRC_ALPHA, WebGl2RenderingContext::ONE_MINUS_SRC_ALPHA);
+        display.ctx.enable(GL::BLEND);
+        display.ctx.blend_func(GL::SRC_ALPHA, GL::ONE_MINUS_SRC_ALPHA);
         
         display.setup_keydown();
         display.setup_mousedown();
