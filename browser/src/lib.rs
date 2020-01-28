@@ -25,3 +25,5 @@ pub mod mesh;
 pub mod grid;
 pub mod font_mesh;
 pub mod text;
+pub mod space_hash;
+pub mod font_mgr;

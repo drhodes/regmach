@@ -40,6 +40,7 @@ impl BrowserDisplay {
             mesh_nonce: 0,
             mesh_store: HashMap::new(),
         };
+                                           store: SpaceHash::new(),
 
         display.ctx.enable(GL::BLEND);
         display.ctx.blend_func(GL::SRC_ALPHA, GL::ONE_MINUS_SRC_ALPHA);

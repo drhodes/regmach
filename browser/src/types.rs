@@ -7,6 +7,7 @@ use nalgebra_glm as glm;
 
 use regmach::dsp::types as rdt;
 use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 #[derive(PartialEq, Eq, Hash)]
 pub struct MeshId(u32);
@@ -16,6 +17,14 @@ pub struct Mesh {
     // pub indices: Vec<u16>,
     pub shader_program: WebGlProgram,
     pub vertex_buffer: WebGlBuffer,
+#[derive(PartialEq, Eq, Hash)]
+pub(crate) struct BucketLoc {
+    pub x: i32,
+    pub y: i32,
+}
+
+pub(crate) struct SpaceHash {
+    pub store: HashMap<BucketLoc, HashSet<rdt::EntityId>>,
 }
 
 pub struct FontMesh {
@@ -37,6 +46,8 @@ pub struct BrowserDisplay {
     pub camera: Camera,
     pub(super) mesh_store: HashMap<MeshId, Mesh>,
     pub(super) mesh_nonce: u32,
+    pub(crate) store: SpaceHash,
+    pub(crate) font_mgr: FontMgr<'a>,
 }
 
 pub type V3 = glm::Vec3;
