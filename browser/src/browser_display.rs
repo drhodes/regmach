@@ -208,6 +208,11 @@ impl BrowserDisplay {
         let worldp = ray * mag - shift;
         glm::vec2(worldp.x, worldp.y)
     }
+
+    pub fn clear(&self) {
+        self.ctx.clear_color(0.98, 0.98, 0.98, 1.0);
+        self.ctx.clear(GL::COLOR_BUFFER_BIT);
+    }
 }
 
 impl<'a> rdt::Display for BrowserDisplay {

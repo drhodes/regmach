@@ -47,8 +47,7 @@ pub fn main() -> Result<(), JsValue> {
     *g.borrow_mut() = Some(Closure::wrap(Box::new(move || {
         dsp.update_canvas_size_todo();
         dsp.props.frame_increment();
-        dsp.ctx.clear_color(0.98, 0.98, 0.98, 1.0);
-        dsp.ctx.clear(GL::COLOR_BUFFER_BIT);
+        dsp.clear();
         for ev in &dsp.get_events() {
             // there should be an event driven way adjust the canvas size.
             // dsp.watch_for_window_resize_awful();
