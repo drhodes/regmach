@@ -18,7 +18,7 @@ impl Camera {
     }
 
     pub fn default() -> Camera {
-        Camera::new(V3::new(0f32, 0f32, -10f32), 3.14159 / 2.0, 1.0, 1.0, 1000.0)
+        Camera::new(V3::new(0f32, 0f32, -10f32), 3.14159 / 2.0, 1.0, 0.0, 1000.0)
     }
 
     pub fn update_aspect(&mut self, w: f64, h: f64) {
@@ -37,7 +37,7 @@ impl Camera {
     }
 
     pub fn zoom_in(&mut self) {
-        if self.pos.z > -1.0 {
+        if self.pos.z > -0.1 {
             return;
         }
         self.pos.z /= 1.125;
