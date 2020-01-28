@@ -92,6 +92,13 @@ two triangles per rasterized pixel.
 
 
 
+**** Dialogs
+Dialogs can be created by manipulating the DOM from rust. Display
+will offer a dialog abstraction to Schematic.  
+
+
+
+
 *** look into
 
 
@@ -116,6 +123,12 @@ Schematic oversees display.  Display doesn't know anything about
 schematic, other than schematic is expecting a stream of events from
 the display. Schematic has its own integer based coordinate system
 which DISPLAY faithfully snaps devices to.
+
+**** BoundingBox
+This is not a hit box.  Bounding Box uses schematic coordinates.
+
+**** Entity Id
+need this for space hash
 
 
 **** Display
