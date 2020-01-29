@@ -1,4 +1,3 @@
-// use nalgebra;
 use nalgebra_glm as glm;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -11,15 +10,14 @@ use web_sys::WebGl2RenderingContext as GL;
 use crate::types::*;
 use regmach::dsp::types as rdt;
 
-impl BrowserDisplay {
+impl BrowserDisplay<'_> {
     // todo establish common error handling across project.
-    pub fn new() -> BrowserDisplay {
+    pub fn new() -> BrowserDisplay<'static> {
         log!("init: BrowserDisplay");
         let window = web_sys::window().expect("no global `window` exists");
         let document = window.document().expect("should have a document on window");
         let canvas = document.get_element_by_id("canvas").unwrap();
-        let canvas: web_sys::HtmlCanvasElement =
-            canvas.dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
+        let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into::<web_sys::HtmlCanvasElement>().unwrap();
         let context = canvas.get_context("webgl2").unwrap().unwrap();
         let context = context.dyn_into::<GL>().unwrap();
         let wrapper = document.get_element_by_id("canvas_wrapper").unwrap();
@@ -29,22 +27,19 @@ impl BrowserDisplay {
         // TODO figure out how websys exposes the debugging info
         // https://www.khronos.org/webgl/wiki/Debugging
 
-        let mut display = BrowserDisplay {
-            window: window,
-            canvas: canvas,
-            wrapper: wrapper,
-            ctx: context,
-            events: Rc::new(RefCell::new(vec![])),
-            props: rdt::DisplayProperties::new(),
-            camera: Camera::default(),
-            mesh_nonce: 0,
-            mesh_store: HashMap::new(),
-        };
+        let mut display = BrowserDisplay { window: window,
+                                           canvas: canvas,
+                                           wrapper: wrapper,
+                                           ctx: context,
+                                           events: Rc::new(RefCell::new(vec![])),
+                                           props: rdt::DisplayProperties::new(),
+                                           camera: Camera::default(),
                                            store: SpaceHash::new(),
+                                           font_mgr: FontMgr::new() };
 
         display.ctx.enable(GL::BLEND);
         display.ctx.blend_func(GL::SRC_ALPHA, GL::ONE_MINUS_SRC_ALPHA);
-        
+
         display.setup_keydown();
         display.setup_mousedown();
         display.setup_mousemove();
@@ -53,26 +48,36 @@ impl BrowserDisplay {
         display
     }
 
+    // Command: AddText
+    // undo command
+    pub fn add_text(&mut self, cmd: rdt::Command) -> Result<Text, String> {
+        if let rdt::Command::AddText(x, y, text) = cmd {
+            let font = self.font_mgr.font();
+            let mut text = Text::new(self, regmach::dsp::colors::JADE_BLUE, &font, &text)?;
+            text.move_to(x, y);
+            return Ok(text);
+        } else {
+            log!("BrowserDisplay::new_text method gets wrong command type: {:?}", cmd);
+            return Err("BrowserDisplay::new_text method gets wrong command type: {:?}".to_owned());
+        }
+    }
+
     fn setup_mousedown(&mut self) {
         let events = self.events.clone();
 
         let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
-            log!("mousedown");
-            let p = rdt::DspPoint {
-                x: event.client_x(),
-                y: event.client_y(),
-            };
-            events.borrow_mut().push(rdt::Event::MouseDown(p));
-            let msg = format!("events: {:?}", events);
-            log!("{:?}", msg);
-        }) as Box<dyn FnMut(_)>);
+                                        log!("mousedown");
+                                        let p = rdt::DspPoint { x: event.client_x(), y: event.client_y() };
+                                        events.borrow_mut().push(rdt::Event::MouseDown(p));
+                                        let msg = format!("events: {:?}", events);
+                                        log!("{:?}", msg);
+                                    }) as Box<dyn FnMut(_)>);
 
         let msg = format!("events: {:?}", self.events);
         log!("{:?}", msg);
 
-        let result = self
-            .canvas
-            .add_event_listener_with_callback("mousedown", closure.as_ref().unchecked_ref());
+        let result =
+            self.canvas.add_event_listener_with_callback("mousedown", closure.as_ref().unchecked_ref());
         match result {
             Err(msg) => {
                 log!("setup_mousedown fails! {:?}", msg);
@@ -89,22 +94,15 @@ impl BrowserDisplay {
         let events = self.events.clone();
 
         let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {
-            //log!("mousemove");
-            let p = rdt::DspPoint {
-                x: event.client_x(),
-                y: event.client_y(),
-            };
-            events.borrow_mut().push(rdt::Event::MouseMove(p));
-            //let msg = format!("events: {:?}", events);
-            //log!("{:?}", msg);
-        }) as Box<dyn FnMut(_)>);
+                                        let p = rdt::DspPoint { x: event.client_x(), y: event.client_y() };
+                                        events.borrow_mut().push(rdt::Event::MouseMove(p));
+                                    }) as Box<dyn FnMut(_)>);
 
         let msg = format!("events: {:?}", self.events);
         log!("{:?}", msg);
 
-        let result = self
-            .canvas
-            .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref());
+        let result =
+            self.canvas.add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref());
         match result {
             Err(msg) => {
                 log!("setup_mousemove fails! {:?}", msg);
@@ -121,17 +119,16 @@ impl BrowserDisplay {
         let events = self.events.clone();
 
         let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
-            log!("keyevent");
-            let code = event.key_code();
-            events.borrow_mut().push(rdt::Event::KeyDown(code));
-        }) as Box<dyn FnMut(_)>);
+                                        log!("keyevent");
+                                        let code = event.key_code();
+                                        events.borrow_mut().push(rdt::Event::KeyDown(code));
+                                    }) as Box<dyn FnMut(_)>);
 
         let msg = format!("events: {:?}", self.events);
         log!("{:?}", msg);
 
-        let result = self
-            .canvas
-            .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref());
+        let result =
+            self.canvas.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref());
         match result {
             Err(msg) => {
                 log!("setup_keydown fails! {:?}", msg);
@@ -150,7 +147,7 @@ impl BrowserDisplay {
         let mut w: f64 = 0.0;
         let mut h: f64 = 0.0;
         if self.window.inner_width().unwrap() != self.canvas.width()
-            || self.window.inner_height().unwrap() != self.canvas.height()
+           || self.window.inner_height().unwrap() != self.canvas.height()
         {
             w = self.window.inner_width().unwrap().as_f64().unwrap();
             h = self.window.inner_height().unwrap().as_f64().unwrap();
@@ -162,19 +159,11 @@ impl BrowserDisplay {
     }
 
     fn height(&self) -> Option<u32> {
-        self.window
-            .inner_height()
-            .expect("fails to get inner width on window")
-            .as_f64()
-            .map(|y| y as u32)
+        self.window.inner_height().expect("fails to get inner width on window").as_f64().map(|y| y as u32)
     }
 
     fn width(&self) -> Option<u32> {
-        self.window
-            .inner_width()
-            .expect("fails to get inner width on window")
-            .as_f64()
-            .map(|x| x as u32)
+        self.window.inner_width().expect("fails to get inner width on window").as_f64().map(|x| x as u32)
     }
 
     // generate viewport coordinates from screen coordinates.
@@ -204,9 +193,9 @@ impl BrowserDisplay {
         let ray = glm::normalize(&ray);
         let zhat = glm::vec4(0.0, 0.0, -1.0, 0.0);
         let dotp = ray.dot(&zhat);
-        let mag = self.camera.pos.z.abs() / dotp;
-        let shift = glm::vec4(self.camera.pos.x, self.camera.pos.y, 0.0, 0.0);
-        let worldp = ray * mag - shift;
+        let mag = (self.camera.pos.z.abs()) / dotp;
+        let shift = glm::vec4(-self.camera.pos.x, self.camera.pos.y, 0.0, 0.0);
+        let worldp = ray * mag + shift;
         glm::vec2(worldp.x, worldp.y)
     }
 
@@ -216,8 +205,10 @@ impl BrowserDisplay {
     }
 }
 
-impl<'a> rdt::Display for BrowserDisplay {
-    fn exec(self: &mut Self, cmd: &rdt::Command) {}
+impl<'a> rdt::Display for BrowserDisplay<'_> {
+    fn exec(self: &mut Self, cmd: &rdt::Command) {
+        // this should push invertible commands onto an undo/redo STACK
+    }
     fn exec_cmds(self: &mut Self, cmds: Vec<rdt::Command>) {}
     fn get_events(self: &mut Self) -> Vec<rdt::Event> {
         self.events.borrow_mut().drain(..).collect()

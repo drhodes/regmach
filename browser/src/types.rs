@@ -6,17 +6,23 @@ use web_sys::{WebGl2RenderingContext, WebGlBuffer, WebGlProgram};
 use nalgebra_glm as glm;
 
 use regmach::dsp::types as rdt;
-use std::collections::HashMap;
 use std::collections::{HashMap, HashSet};
 
-#[derive(PartialEq, Eq, Hash)]
-pub struct MeshId(u32);
+// #[derive(PartialEq, Eq, Hash)]
+// pub struct MeshId(u32);
 
 pub struct Mesh {
     pub vertices: Vec<f32>,
     // pub indices: Vec<u16>,
     pub shader_program: WebGlProgram,
     pub vertex_buffer: WebGlBuffer,
+    pub x: f32,
+    pub y: f32,
+    pub translation_matrix: glm::Mat4,
+}
+
+pub(crate) struct FontMgr<'a>(pub rusttype::Font<'a>);
+
 #[derive(PartialEq, Eq, Hash)]
 pub(crate) struct BucketLoc {
     pub x: i32,
@@ -34,9 +40,12 @@ pub struct FontMesh {
     pub shader_program: WebGlProgram,
     pub vertex_buffer: WebGlBuffer,
     pub color_buffer: WebGlBuffer,
+    pub x: f32,
+    pub y: f32,
+    pub translation_matrix: glm::Mat4,
 }
 
-pub struct BrowserDisplay {
+pub struct BrowserDisplay<'a> {
     pub window: web_sys::Window,
     pub canvas: web_sys::HtmlCanvasElement,
     pub wrapper: web_sys::HtmlDivElement,
@@ -44,8 +53,6 @@ pub struct BrowserDisplay {
     pub events: Rc<RefCell<Vec<rdt::Event>>>,
     pub props: rdt::DisplayProperties,
     pub camera: Camera,
-    pub(super) mesh_store: HashMap<MeshId, Mesh>,
-    pub(super) mesh_nonce: u32,
     pub(crate) store: SpaceHash,
     pub(crate) font_mgr: FontMgr<'a>,
 }
