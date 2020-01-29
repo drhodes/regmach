@@ -1,4 +1,4 @@
-error_on_line_overflow = true
-error_on_unformatted = true
+max_width = 110
+indent_style = "Visual"
+use_small_heuristics = "Max"
 version = "Two"
-
