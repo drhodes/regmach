@@ -175,28 +175,21 @@ impl BrowserDisplay<'_> {
         (gl_x, gl_y)
     }
 
-    // The joys of mouse picking.
-    // https://stackoverflow.com/questions/29997209/opengl-c-mouse-ray-picking-glmunproject
-    fn screen_to_world_ray(&self, mouse_x: u32, mouse_y: u32) -> glm::Vec4 {
-        let (vp_x, vp_y) = self.screen_to_viewport(mouse_x, mouse_y);
-        let view = self.camera.view_matrix();
-        let proj = self.camera.projection_matrix();
-        let mouse = glm::vec4(vp_x, -vp_y, 1.0, 1.0);
-        let p = glm::inverse(&(proj * view)) * mouse;
-        p
-    }
-
     // cast a ray from the camera into the world down to the schematic grid.
     // maybe there's a better way to do it.
     pub fn screen_to_schematic(&self, mouse_x: u32, mouse_y: u32) -> glm::Vec2 {
-        let ray = self.screen_to_world_ray(mouse_x, mouse_y);
-        let ray = glm::normalize(&ray);
-        let zhat = glm::vec4(0.0, 0.0, -1.0, 0.0);
-        let dotp = ray.dot(&zhat);
-        let mag = (self.camera.pos.z.abs()) / dotp;
-        let shift = glm::vec4(-self.camera.pos.x, self.camera.pos.y, 0.0, 0.0);
-        let worldp = ray * mag + shift;
-        glm::vec2(worldp.x, worldp.y)
+        let (vx, vy) = self.screen_to_viewport(mouse_x, mouse_y);
+        let w = self.width().unwrap() as f32;
+        let h = self.height().unwrap() as f32;
+
+        let rat = w / h;
+        let c = self.camera.pos.z;
+        let a = self.camera.z_near;
+        let b = (vx * vx + vy * vy).sqrt();
+        let d = c * (b / a);
+        let v = glm::vec2(vx, vy).normalize() * d;
+
+        glm::vec2(-v.x * rat - self.camera.pos.x, -v.y + self.camera.pos.y)
     }
 
     pub fn clear(&self) {
