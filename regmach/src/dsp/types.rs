@@ -22,14 +22,17 @@ pub struct Color {
     pub b: u8,
 }
 
-/// High level interface commands supported by Display. 
+#[derive(Clone, Debug)]
+pub struct EntityId(u32);
+
+/// High level interface commands supported by Display.
 
 // Maybe command should instead be REQUEST, and also have a RESPONSE.
 #[derive(Debug)]
 pub enum Command {
     /// Add a
     AddSegment(Segment),
-    AddText(i16, i16, String),
+    AddText(f32, f32, String),
     SetStrokeSize(u32),
     SetDrawColor(Color),
     FillScreen,

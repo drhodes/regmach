@@ -16,27 +16,33 @@ pub fn main() -> Result<(), JsValue> {
     let mut dsp: BrowserDisplay = BrowserDisplay::new();
 
     let verts: Vec<f32> = vec![-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
-    let mesh = Mesh::from_verts(
-        &dsp,
-        verts,
-        include_str!("../shaders/basic-shader.vs"),
-        include_str!("../shaders/basic-shader.fs"),
-    )?;
+    let mut mesh = Mesh::from_verts(&dsp,
+                                    verts,
+                                    include_str!("../shaders/basic-shader.vs"),
+                                    include_str!("../shaders/basic-shader.fs"))?;
 
     let grid = Grid::new(&dsp)?;
-    let font_data = include_bytes!("../../media/font/routed-gothic.ttf");
-    let collection = FontCollection::from_bytes(font_data as &[u8]).unwrap_or_else(|e| {
-        panic!("error constructing a FontCollection from bytes: {}", e);
-    });
-    
-    let font = collection
-        .into_font() // only succeeds if collection consists of one font
-        .unwrap_or_else(|e| {
-            panic!("error turning FontCollection into a Font: {}", e);
-        });
 
-    let text = Text::new(&dsp, regmach::dsp::colors::JADE_BLUE, &font, "DRAM[63:0]")?;
-    
+    // let font_data = include_bytes!("../../media/font/routed-gothic.ttf");
+    // let collection = FontCollection::from_bytes(font_data as &[u8]).unwrap_or_else(|e| {
+    //                      panic!("error constructing a FontCollection from bytes: {}", e);
+    //                  });
+
+    // let font = collection.into_font() // only succeeds if collection consists of one font
+    //                      .unwrap_or_else(|e| {
+    //                          panic!("error turning FontCollection into a Font: {}", e);
+    //                      });
+
+    // let text = Text::new(&dsp, regmach::dsp::colors::JADE_BLUE, &font, "DRAM[63:0]")?;
+
+    let mut texts = vec![];
+
+    for i in 0..100 {
+        texts.push(dsp.add_text(rdt::Command::AddText(i as f32,
+                                                      i as f32,
+                                                      format!("({:?}, {:?})", i, i).to_owned()))?);
+    }
+
     // -----------------------------------------------------------------------------
     // MAIN EVENT LOOP
     // https://rustwasm.github.io/wasm-bindgen/examples/request-animation-frame.html
