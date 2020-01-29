@@ -87,6 +87,14 @@ There are a bunch of ways to do this. There isn't going to be a ton of
 text on the screen, so for now, inefficient is OK.  Currently using
 two triangles per rasterized pixel.
 
+Current method needs to change. The font manager needs to buffer each
+character individually and maintain hashmap from char -> ArrayBuffer.
+Still use the rusttype for text layout, but skip the rasterization
+step and instead for each glyph in text: bind the ArrayBuffer and so on..
+
+Going to need a custom Glyph type that store the layout coords as
+translation matrix.
+
 ***** pixels triangles.
 
 
