@@ -37,7 +37,7 @@ impl Camera {
     }
 
     pub fn zoom_in(&mut self) {
-        if self.pos.z > -self.z_near {
+        if self.pos.z >= -self.z_near * 1.125 {
             return;
         }
         self.pos.z /= 1.125;
