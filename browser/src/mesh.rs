@@ -58,7 +58,6 @@ impl Mesh {
         Ok(mesh)
     }
 
-    //
     pub fn move_to(&mut self, x: f32, y: f32) {
         self.x = x;
         self.y = y;
@@ -82,13 +81,11 @@ impl Mesh {
         dsp.ctx.draw_arrays(mode, 0, (self.vertices.len() / 3) as i32);
     }
 
-    pub fn load_vertex_shader(dsp: &BrowserDisplay, shadertxt: &str) -> Result<web_sys::WebGlShader, String> {
-        gl_util::compile_shader(&dsp.ctx, GL::VERTEX_SHADER, shadertxt)
+    pub fn load_vertex_shader(dsp: &BrowserDisplay, src: &str) -> Result<web_sys::WebGlShader, String> {
+        gl_util::compile_shader(&dsp.ctx, GL::VERTEX_SHADER, src)
     }
 
-    pub fn load_fragment_shader(dsp: &BrowserDisplay,
-                                shadertxt: &str)
-                                -> Result<web_sys::WebGlShader, String> {
-        gl_util::compile_shader(&dsp.ctx, GL::FRAGMENT_SHADER, shadertxt)
+    pub fn load_fragment_shader(dsp: &BrowserDisplay, src: &str) -> Result<web_sys::WebGlShader, String> {
+        gl_util::compile_shader(&dsp.ctx, GL::FRAGMENT_SHADER, src)
     }
 }

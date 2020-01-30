@@ -22,7 +22,6 @@ impl BrowserDisplay<'_> {
         let context = context.dyn_into::<GL>().unwrap();
         let wrapper = document.get_element_by_id("canvas_wrapper").unwrap();
         let wrapper = wrapper.dyn_into::<web_sys::HtmlDivElement>().unwrap();
-        log!("..init: got webgl2 context from browser");
 
         // TODO figure out how websys exposes the debugging info
         // https://www.khronos.org/webgl/wiki/Debugging
@@ -144,8 +143,8 @@ impl BrowserDisplay<'_> {
     // TODO: figure out a better way to update canvas size on window resize
     // right now this checks on every frame in the main loop
     pub fn update_canvas_size_todo(&mut self) {
-        let wrapw = self.wrapper.client_width() as u32;
-        let wraph = self.wrapper.client_height() as u32;
+        let wrapw = self.wrapper.offset_width() as u32;
+        let wraph = self.wrapper.offset_height() as u32;
         let canvw = self.canvas.width();
         let canvh = self.canvas.height();
 
@@ -157,18 +156,18 @@ impl BrowserDisplay<'_> {
         }
     }
 
-    fn height(&self) -> Option<u32> {
-        self.window.inner_height().expect("fails to get inner width on window").as_f64().map(|y| y as u32)
+    fn height(&self) -> u32 {
+        self.wrapper.offset_height() as u32
     }
 
-    fn width(&self) -> Option<u32> {
-        self.window.inner_width().expect("fails to get inner width on window").as_f64().map(|x| x as u32)
+    fn width(&self) -> u32 {
+        self.wrapper.offset_width() as u32
     }
 
     // generate viewport coordinates from screen coordinates.
     pub fn screen_to_viewport(&self, mouse_x: u32, mouse_y: u32) -> (f32, f32) {
-        let w_px = self.width().unwrap();
-        let h_px = self.height().unwrap();
+        let w_px = self.width();
+        let h_px = self.height();
         let gl_x = 2.0 * (mouse_x as f32 / w_px as f32) - 1.0;
         let gl_y = -2.0 * (mouse_y as f32 / h_px as f32) + 1.0;
         (gl_x, gl_y)
@@ -178,8 +177,8 @@ impl BrowserDisplay<'_> {
     // maybe there's a better way to do it.
     pub fn screen_to_schematic(&self, mouse_x: u32, mouse_y: u32) -> glm::Vec2 {
         let (vx, vy) = self.screen_to_viewport(mouse_x, mouse_y);
-        let w = self.width().unwrap() as f32;
-        let h = self.height().unwrap() as f32;
+        let w = self.width() as f32;
+        let h = self.height() as f32;
 
         let rat = w / h;
         let c = self.camera.pos.z;

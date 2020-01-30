@@ -9,38 +9,28 @@
       }
 
       .wrapper {
-          height: 100vh;
+          display: flex;
+          height: 100%;
+          /* height: 100vh; */
           /* overflow: auto; */
       }
-
-      /* canvas { */
-      /*   width: 100vw; */
-      /*   height: 100vh; */
-      /*   display: block; */
-      /* } */
     </style>
+    <script src="./js/jsframe.js"></script>
+
   </head>
   <body bgcolor="#fff">
     <script>
       var send_blue = function() { console.log("before blue"); }
       var send_red = function() { console.log("before red"); }
     </script>
-    <div id="dream" style="color:#EEE;"><center><H1>DREAM OF FASTER COMPUTERS</H1></center></div>
+    
+    <div id="dream" style="color:#EEE;"><center><H1><i>dream of faster computers</i></H1></center></div>
     <div id="canvas_wrapper" class="wrapper">
       <canvas id="canvas" tabindex='1' height="1" width="1"></canvas>
     </div>
     
-    <script>
-      // prevent canvas from selecting.
-      //canvas.onselectstart = function () { return false; }
-    </script>
-    
-    <script>
-      canvas.focus();
-      
-    </script> 
+    <script> canvas.focus(); </script> 
     <!-- Note the usage of `type=module` here as this is an ES6 module -->
-
     
     <script type="module">
       // Use ES module import syntax to import functionality from the module

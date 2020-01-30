@@ -92,25 +92,20 @@ character individually and maintain hashmap from char -> ArrayBuffer.
 Still use the rusttype for text layout, but skip the rasterization
 step and instead for each glyph in text: bind the ArrayBuffer and so on..
 
-Going to need a custom Glyph type that store the layout coords as
-translation matrix.
+****** TWO NECESSARY OPTIMIZATIONS: (but not yet)
 
-***** pixels triangles.
+- Going to need a custom Glyph type that store the layout coords as
+  translation matrices. This will reduce the number triangles sent to
+  the GPU
 
+- square coagulation to remove triangles. This will reduce triangle
+  count.
 
-
-
-**** Dialogs
+**** Dialogs (DISPLAY feature)
 Dialogs can be created by manipulating the DOM from rust. Display
 will offer a dialog abstraction to Schematic.  
 
-
-
-
 *** look into
-
-
-  
 
 **** wasm rust
   - https://rustwasm.github.io/wasm-bindgen/examples/webgl.html
@@ -129,11 +124,8 @@ Unless the webgl canvas is focused, keyboard events will not be generated.
 **** Interpreter Layers
 Schematic oversees display.  Display doesn't know anything about
 schematic, other than schematic is expecting a stream of events from
-the display. Schematic has its own integer based coordinate system
-which DISPLAY faithfully snaps devices to.
-
-**** BoundingBox
-This is not a hit box.  Bounding Box uses schematic coordinates.
+the display. Schematic uses opengl-world based coordinate system. Some
+entities use grid snapping, DISPLAY entities have a snap property,
 
 **** Entity Id
 need this for space hash

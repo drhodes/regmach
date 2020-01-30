@@ -6,13 +6,6 @@ pub struct DspPoint {
     pub y: i32,
 }
 
-///
-#[derive(Clone, Debug)]
-pub struct Segment {
-    pub p1: DspPoint,
-    pub p2: DspPoint,
-}
-
 pub struct Err(String);
 
 #[derive(Clone, Debug)]
@@ -31,18 +24,18 @@ pub struct EntityId(u32);
 #[derive(Debug)]
 pub enum Command {
     /// Add a
-    AddSegment(Segment),
+    //AddButton(EntityId, Icon,)
+    AddBox(f32, f32, f32, f32),
     AddText(f32, f32, String),
+    AddMesh(Vec<f32>, Vec<u16>),
     SetStrokeSize(u32),
     SetDrawColor(Color),
-    FillScreen,
-    RenderCursor,
-    Zoom(i32),
-    IncrementFrame,
-    DrawGrid,
+    SetSnap(EntityId, bool), // default true
     // UserDialog(Dialog) -> RESPONSE.
+    Batch(Vec<Command>),
 }
 
+/// These events are sent from display to schematic.
 #[derive(Debug)]
 pub enum Event {
     Quit,
@@ -51,7 +44,6 @@ pub enum Event {
     MouseDrag(DspPoint),
     MouseMove(DspPoint),
     KeyDown(u32),
-    DeviceClick(u32),
 }
 
 pub struct DisplayProperties {
@@ -61,11 +53,10 @@ pub struct DisplayProperties {
     pub frame: u64,
 }
 
-/// Display does not know about entities.  Display is a basic command
-/// driven graphics provider.  It's an interface to the lower level
-/// canvas on whatever platform.  Entities don't know about the
-/// platform, but they know how to build commands that the Display
-/// knows how to interpret.
+/// Display is a baDspPointand driven graphics provider.  It's an
+/// interface to the lower level canvas on whatever platform.
+/// Entities don't know about the platform, but they know how to build
+/// commands that the Display knows how to interpret.
 pub trait Display {
     fn exec(self: &mut Self, cmd: &Command);
     fn exec_cmds(self: &mut Self, cmds: Vec<Command>);

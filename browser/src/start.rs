@@ -23,9 +23,9 @@ pub fn main() -> Result<(), JsValue> {
 
     let grid = Grid::new(&dsp)?;
     let mut texts = vec![];
-    for i in 0..100 {
-        texts.push(dsp.add_text(rdt::Command::AddText(i as f32,
-                                                      i as f32,
+    for i in (0..=100).step_by(5) {
+        texts.push(dsp.add_text(rdt::Command::AddText(i as f32 + 0.0,
+                                                      i as f32 + 1.0,
                                                       format!("({:?}, {:?})", i, i).to_owned()))?);
     }
 
@@ -55,7 +55,7 @@ pub fn main() -> Result<(), JsValue> {
                                        }
                                        rdt::Event::MouseMove(p) => {
                                            let pos = dsp.screen_to_schematic(p.x as u32, p.y as u32);
-                                           triangle.move_to(pos.x, pos.y);
+                                           // triangle.move_to(pos.x, pos.y);
                                        }
                                        rdt::Event::KeyDown(code) => {
                                            log!("processing {:?}", ev);
@@ -83,7 +83,7 @@ pub fn main() -> Result<(), JsValue> {
                                    text.draw_with_mode(&dsp, GL::TRIANGLES);
                                }
 
-                               // Schedule another requestAnimationFrame callback.
+                               // schedule another requestAnimationFrame callback.
                                request_animation_frame(f.borrow().as_ref().unwrap());
                            }) as Box<dyn FnMut()>));
 

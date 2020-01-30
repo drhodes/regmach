@@ -25,6 +25,7 @@ impl Camera {
         if h <= EPSILON64 {
             return;
         }
+
         self.aspect = (w / h) as f32;
         self.perspective = glm::perspective(self.aspect, self.fov, self.z_near, self.z_far);
     }

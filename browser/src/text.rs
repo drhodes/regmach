@@ -37,20 +37,19 @@ impl Text {
         let glyphs: Vec<PositionedGlyph<'_>> = font.layout(text, scale, offset).collect();
 
         // Find the most visually pleasing width to display
-        let width =
-            glyphs.iter()
-                  .rev()
-                  .map(|g| g.position().x as f32 + g.unpositioned().h_metrics().advance_width)
-                  .next()
-                  .unwrap_or(0.0)
-                  .ceil() as usize;
+        let width = glyphs.iter()
+                          .rev()
+                          .map(|g| g.position().x as f32 + g.unpositioned().h_metrics().advance_width)
+                          .next()
+                          .unwrap_or(0.0)
+                          .ceil() as usize;
 
         let mut text_verts: Vec<f32> = vec![];
+
         let mut colors: Vec<f32> = vec![];
         let (red, green, blue, _) = color.as_gl();
 
         for glyph in glyphs.iter().rev() {
-            // this clone is just to appease the rust type checker, it will be going away.
             if let Some(bb) = glyph.pixel_bounding_box() {
                 glyph.draw(|x, y, v| {
                          if v > 0.3 {

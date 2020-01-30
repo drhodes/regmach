@@ -34,11 +34,6 @@ pub struct UserModule {
     pub terms: Vec<Terminal>,
 }
 
-pub struct Wire {
-    pub id: EntityId,
-    pub segments: Vec<dsp::Segment>,
-}
-
 pub trait Entity {
     // fn point_inside(self: &Self, p: &DspPoint) -> bool;
     // fn bounding_box(self: &Self) -> BBox;
@@ -50,4 +45,5 @@ pub trait Entity {
 
 pub struct Schematic {
     pub entities: Vec<Box<dyn Entity>>, //fn add_entity(e: dyn Entity) -> Err;
+    pub display: Box<dsp::Display>,
 }

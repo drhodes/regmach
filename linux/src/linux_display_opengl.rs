@@ -29,14 +29,11 @@ impl LinuxDisplayOpenGl {
     pub fn new() -> LinuxDisplayOpenGl {
         let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
 
-        let (mut window, events) = glfw
-            .create_window(
-                600,
-                600,
-                "Register Machine Development Environment",
-                glfw::WindowMode::Windowed,
-            )
-            .expect("Failed to create GLFW window.");
+        let (mut window, events) = glfw.create_window(600,
+                                                      600,
+                                                      "Register Machine Development Environment",
+                                                      glfw::WindowMode::Windowed)
+                                       .expect("Failed to create GLFW window.");
 
         window.set_cursor_pos_polling(true);
         window.set_key_polling(true);
@@ -68,40 +65,32 @@ impl LinuxDisplayOpenGl {
                 if err != 0 {
                     println!("opengl err: {:?}", err);
                 }
-                gl::DrawElements(
-                    gl::TRIANGLES,
-                    geom.indices.len() as i32 * 3,
-                    gl::UNSIGNED_INT,
-                    ptr::null(),
-                );
+                gl::DrawElements(gl::TRIANGLES, geom.indices.len() as i32 * 3, gl::UNSIGNED_INT, ptr::null());
             }
             window.swap_buffers();
         }
 
-        LinuxDisplayOpenGl {
-            ctx: glfw,
-            // canvas: canvas,
-            // event_pump: event_pump,
-            props: rdt::DisplayProperties::new(),
-        }
+        LinuxDisplayOpenGl { ctx: glfw,
+                             // canvas: canvas,
+                             // event_pump: event_pump,
+                             props: rdt::DisplayProperties::new() }
     }
 }
 
 impl rdt::Display for LinuxDisplayOpenGl {
     fn exec(self: &mut Self, cmd: &Command) {
         match cmd {
-            Command::FillScreen => {
-                //self.canvas.clear();
-                // unsafe {
-                //     gl::ClearColor(0.99, 0.99, 0.99, 1.0);
-                //     gl::Clear(gl::COLOR_BUFFER_BIT);
-                // }
-            }
+            // Command::FillScreen => {
+            //self.canvas.clear();
+            // unsafe {
+            //     gl::ClearColor(0.99, 0.99, 0.99, 1.0);
+            //     gl::Clear(gl::COLOR_BUFFER_BIT);
+            // }
+            // }
 
-            Command::IncrementFrame => {
-                // self.props.frame += 1;
-            }
-
+            // Command::IncrementFrame => {
+            //     // self.props.frame += 1;
+            // }
             Command::SetDrawColor(c) => {
                 // self.props.current_color.r = c.r;
                 // self.props.current_color.g = c.g;
@@ -109,58 +98,58 @@ impl rdt::Display for LinuxDisplayOpenGl {
                 // self.canvas.set_draw_color(c.as_sdl());
             }
 
-            Command::AddSegment(seg) => {
-                // width of all lines? think about this. depends on
-                // zoom, if zoom is a display property, or schematic
-                // property.
+            // Command::AddSegment(seg) => {
+            // width of all lines? think about this. depends on
+            // zoom, if zoom is a display property, or schematic
+            // property.
 
-                // ------------------------------------------------------------------
+            // ------------------------------------------------------------------
 
-                // let line_width = 1;
+            // let line_width = 1;
 
-                // let p1 = (seg.p1.x, seg.p1.y);
-                // let p2 = (seg.p2.x, seg.p2.y);
-                // self.canvas.thick_line(
-                //     seg.p1.x as i16,
-                //     seg.p1.y as i16,
-                //     seg.p2.x as i16,
-                //     seg.p2.y as i16,
-                //     line_width,
-                //     self.props.current_color.as_sdl(),
-                // );
+            // let p1 = (seg.p1.x, seg.p1.y);
+            // let p2 = (seg.p2.x, seg.p2.y);
+            // self.canvas.thick_line(
+            //     seg.p1.x as i16,
+            //     seg.p1.y as i16,
+            //     seg.p2.x as i16,
+            //     seg.p2.y as i16,
+            //     line_width,
+            //     self.props.current_color.as_sdl(),
+            // );
 
-                // let frame_string = format!("{:?}", self.props.frame);
-                // self.canvas.string(
-                //     20,
-                //     20,
-                //     frame_string.as_str(),
-                //     self.props.current_color.as_sdl(),
-                // );
-                // self.canvas.draw_line(p1, p2);
-            }
+            // let frame_string = format!("{:?}", self.props.frame);
+            // self.canvas.string(
+            //     20,
+            //     20,
+            //     frame_string.as_str(),
+            //     self.props.current_color.as_sdl(),
+            // );
+            // self.canvas.draw_line(p1, p2);
+            // }
 
-            Command::RenderCursor => {
-                // let p = &self.props.mouse_loc;
+            // Command::RenderCursor => {
+            // let p = &self.props.mouse_loc;
 
-                // // this function is incredibly slow when
-                // self.canvas.thick_line(
-                //     0 as i16,
-                //     p.y as i16,
-                //     10000 as i16,
-                //     p.y as i16,
-                //     1,
-                //     self.props.current_color.as_sdl(),
-                // );
+            // // this function is incredibly slow when
+            // self.canvas.thick_line(
+            //     0 as i16,
+            //     p.y as i16,
+            //     10000 as i16,
+            //     p.y as i16,
+            //     1,
+            //     self.props.current_color.as_sdl(),
+            // );
 
-                // self.canvas.thick_line(
-                //     p.x as i16,
-                //     0 as i16,
-                //     p.x as i16,
-                //     10000 as i16,
-                //     1,
-                //     self.props.current_color.as_sdl(),
-                // );
-            }
+            // self.canvas.thick_line(
+            //     p.x as i16,
+            //     0 as i16,
+            //     p.x as i16,
+            //     10000 as i16,
+            //     1,
+            //     self.props.current_color.as_sdl(),
+            // );
+            // }
             _ => {}
         }
     }
@@ -223,22 +212,14 @@ fn build_path() -> VertexBuffers<MyVertex, u32> {
     let mut tessellator = FillTessellator::new();
     {
         // Compute the tessellation.
-        tessellator
-            .tessellate_path(
-                &path,
-                &FillOptions::default(),
-                &mut BuffersBuilder::new(&mut geometry, |pos: Point, _: FillAttributes| {
-                    pos.to_array()
-                }),
-            )
-            .unwrap();
+        tessellator.tessellate_path(&path,
+                                    &FillOptions::default(),
+                                    &mut BuffersBuilder::new(&mut geometry,
+                                                             |pos: Point, _: FillAttributes| pos.to_array()))
+                   .unwrap();
     }
     // The tessellated geometry is ready to be uploaded to the GPU.
-    println!(
-        " -- {} vertices {} indexes",
-        geometry.vertices.len(),
-        geometry.indices.len()
-    );
+    println!(" -- {} vertices {} indexes", geometry.vertices.len(), geometry.indices.len());
     geometry
 }
 
@@ -315,16 +296,14 @@ fn gl_setup(geometry: &VertexBuffers<[f32; 2], u32>) -> (u32, u32, u32) {
         gl::BindBuffer(gl::ARRAY_BUFFER, vbo); // make vbo current array buffer
 
         // creates and initializes a buffer object's data store
-        gl::BufferData(
-            // target
-            gl::ARRAY_BUFFER,
-            // size
-            (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-            // void *data
-            &vertices[0] as *const f32 as *const c_void,
-            // usage
-            gl::STATIC_DRAW,
-        );
+        gl::BufferData(// target
+                       gl::ARRAY_BUFFER,
+                       // size
+                       (vertices.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                       // void *data
+                       &vertices[0] as *const f32 as *const c_void,
+                       // usage
+                       gl::STATIC_DRAW);
 
         // define an array of generic vertex attribute data for verts
         gl::VertexAttribPointer(
@@ -345,16 +324,14 @@ fn gl_setup(geometry: &VertexBuffers<[f32; 2], u32>) -> (u32, u32, u32) {
         gl::BindBuffer(gl::ARRAY_BUFFER, color_buffer_id); // make color buffer current array buffer
 
         // creates and initializes a buffer object's data store
-        gl::BufferData(
-            // target
-            gl::ARRAY_BUFFER,
-            // size
-            (colors.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
-            // void *data
-            &colors[0] as *const f32 as *const c_void,
-            // usage
-            gl::STATIC_DRAW,
-        );
+        gl::BufferData(// target
+                       gl::ARRAY_BUFFER,
+                       // size
+                       (colors.len() * mem::size_of::<GLfloat>()) as GLsizeiptr,
+                       // void *data
+                       &colors[0] as *const f32 as *const c_void,
+                       // usage
+                       gl::STATIC_DRAW);
 
         // define an array of generic vertex attribute data for verts
         gl::VertexAttribPointer(
@@ -373,16 +350,14 @@ fn gl_setup(geometry: &VertexBuffers<[f32; 2], u32>) -> (u32, u32, u32) {
         gl::GenBuffers(2, &mut index_buffer_id);
         gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, index_buffer_id);
 
-        gl::BufferData(
-            // target
-            gl::ELEMENT_ARRAY_BUFFER,
-            // size
-            (indexes.len() * mem::size_of::<u32>()) as GLsizeiptr,
-            // void *data
-            &indexes[0] as *const i32 as *const c_void,
-            // usage
-            gl::STATIC_DRAW,
-        );
+        gl::BufferData(// target
+                       gl::ELEMENT_ARRAY_BUFFER,
+                       // size
+                       (indexes.len() * mem::size_of::<u32>()) as GLsizeiptr,
+                       // void *data
+                       &indexes[0] as *const i32 as *const c_void,
+                       // usage
+                       gl::STATIC_DRAW);
 
         check_gl_error();
         // Wireframe
@@ -416,12 +391,7 @@ fn check_shader_err(vertex_shader: u32, msg: &str, info_log: &mut Vec<u8>) {
         // Check for shader compilation errors
         gl::GetShaderiv(vertex_shader, gl::COMPILE_STATUS, &mut success);
         if success != i32::from(gl::TRUE) {
-            gl::GetShaderInfoLog(
-                vertex_shader,
-                512,
-                ptr::null_mut(),
-                info_log.as_mut_ptr() as *mut GLchar,
-            );
+            gl::GetShaderInfoLog(vertex_shader, 512, ptr::null_mut(), info_log.as_mut_ptr() as *mut GLchar);
             println!("{}{}", msg, str::from_utf8(&info_log).unwrap());
         }
     }
@@ -435,11 +405,7 @@ unsafe fn make_vertex_shader(src: &str, info_log: &mut Vec<u8>) -> u32 {
     gl::CompileShader(vertex_shader);
 
     // Check for shader compilation errors
-    check_shader_err(
-        vertex_shader,
-        "ERROR::SHADER::VERTEX::COMPILATION_FAILED{}",
-        info_log,
-    );
+    check_shader_err(vertex_shader, "ERROR::SHADER::VERTEX::COMPILATION_FAILED{}", info_log);
     vertex_shader
 }
 
@@ -451,11 +417,7 @@ unsafe fn make_fragment_shader(src: &str, info_log: &mut Vec<u8>) -> u32 {
     gl::CompileShader(fragment_shader);
 
     // Check for shader compilation errors
-    check_shader_err(
-        fragment_shader,
-        "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED{}",
-        info_log,
-    );
+    check_shader_err(fragment_shader, "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED{}", info_log);
     fragment_shader
 }
 
@@ -469,16 +431,8 @@ unsafe fn link_shaders(vertex_shader: u32, fragment_shader: u32, info_log: &mut 
     // Check for linking errors
     gl::GetProgramiv(shader_program, gl::LINK_STATUS, &mut success);
     if success != i32::from(gl::TRUE) {
-        gl::GetProgramInfoLog(
-            shader_program,
-            512,
-            ptr::null_mut(),
-            info_log.as_mut_ptr() as *mut GLchar,
-        );
-        println!(
-            "ERROR::SHADER::PROGRAM::COMPILATION_FAILED{}",
-            str::from_utf8(&info_log).unwrap()
-        );
+        gl::GetProgramInfoLog(shader_program, 512, ptr::null_mut(), info_log.as_mut_ptr() as *mut GLchar);
+        println!("ERROR::SHADER::PROGRAM::COMPILATION_FAILED{}", str::from_utf8(&info_log).unwrap());
     }
 
     gl::DeleteShader(vertex_shader);
