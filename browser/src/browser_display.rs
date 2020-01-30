@@ -144,17 +144,16 @@ impl BrowserDisplay<'_> {
     // TODO: figure out a better way to update canvas size on window resize
     // right now this checks on every frame in the main loop
     pub fn update_canvas_size_todo(&mut self) {
-        let mut w: f64 = 0.0;
-        let mut h: f64 = 0.0;
-        if self.window.inner_width().unwrap() != self.canvas.width()
-           || self.window.inner_height().unwrap() != self.canvas.height()
-        {
-            w = self.window.inner_width().unwrap().as_f64().unwrap();
-            h = self.window.inner_height().unwrap().as_f64().unwrap();
-            self.canvas.set_width(w.floor() as u32);
-            self.canvas.set_height(h.floor() as u32);
-            self.camera.update_aspect(w, h);
-            self.ctx.viewport(0, 0, w as i32, h as i32);
+        let wrapw = self.wrapper.client_width() as u32;
+        let wraph = self.wrapper.client_height() as u32;
+        let canvw = self.canvas.width();
+        let canvh = self.canvas.height();
+
+        if wrapw != canvw || wraph != canvh {
+            self.canvas.set_width(wrapw);
+            self.canvas.set_height(wraph);
+            self.camera.update_aspect(wrapw as f64, wraph as f64);
+            self.ctx.viewport(0, 0, wrapw as i32, wraph as i32);
         }
     }
 
