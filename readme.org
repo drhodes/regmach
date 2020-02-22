@@ -1,6 +1,15 @@
-* A graphical register machine simulator
+* 
+** Update [2020-02-22 Sat 08:52]
+Start integrating jade-parse module loader.  How much of the jade js
+architecture can be ported?  It looks like all of the DOM manipulation
+in jade is completely doable with web-sys, with a little added type
+ceremony.
+
+This project is changing to be a whole lot more like jade, borrowing
+heavily when it can.
+
 ** What?
-- Of the ilk found in [[https://sarabander.github.io/sicp/html/5_002e1.xhtml#g_t5_002e1_002e2][chapter 5 of SICP.]]
+- Systems simulator
   
 ** Why?
 - It would be neat to be able to mess around with an interactive
@@ -11,6 +20,7 @@
 - rust, wasm, js for the ui, webgl for the display.
 
 ** Plan
+
 
 *** features
 **** schematic entities can be selected/deselected
