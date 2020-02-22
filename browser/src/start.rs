@@ -1,6 +1,7 @@
 use crate::types::*;
 use regmach::dsp::types as rdt;
 use regmach::dsp::types::Display;
+use regmach::schem::types::Schematic;
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
@@ -13,7 +14,11 @@ use std::io::Write;
 // Called when the wasm module is instantiated
 #[wasm_bindgen(start)]
 pub fn main() -> Result<(), JsValue> {
-    let mut dsp: BrowserDisplay = BrowserDisplay::new();
+    let mut dsp = BrowserDisplay::new();
+    // let schematic = Schematic::from_display(box BrowserDisplay::new());
+
+    // need to move these meshes and text entities into a space hash
+    // they need to be hidden.
 
     let verts: Vec<f32> = vec![-0.7, -0.7, 0.0, 0.7, -0.7, 0.0, 0.0, 0.7, 0.0];
     let mut triangle = Mesh::from_verts(&dsp,
@@ -22,11 +27,11 @@ pub fn main() -> Result<(), JsValue> {
                                         include_str!("../shaders/basic-shader.fs"))?;
 
     let grid = Grid::new(&dsp)?;
-    let mut texts = vec![];
+
     for i in (0..=100).step_by(5) {
-        texts.push(dsp.add_text(rdt::Command::AddText(i as f32 + 0.0,
-                                                      i as f32 + 1.0,
-                                                      format!("({:?}, {:?})", i, i).to_owned()))?);
+        dsp.add_text(rdt::Command::AddText(i as f32 + 0.0,
+                                           i as f32 + 1.0,
+                                           format!("({:?}, {:?})", i, i).to_owned()));
     }
 
     // -----------------------------------------------------------------------------
@@ -34,6 +39,7 @@ pub fn main() -> Result<(), JsValue> {
     // https://rustwasm.github.io/wasm-bindgen/examples/request-animation-frame.html
 
     let f = Rc::new(RefCell::new(None));
+
     let g = f.clone();
 
     *g.borrow_mut() =
@@ -77,11 +83,9 @@ pub fn main() -> Result<(), JsValue> {
                                }
 
                                grid.draw(&dsp);
-                               triangle.draw_with_mode(&dsp, GL::TRIANGLES);
 
-                               for text in texts.iter() {
-                                   text.draw_with_mode(&dsp, GL::TRIANGLES);
-                               }
+                               triangle.draw_with_mode(&dsp, GL::TRIANGLES);
+                               dsp.draw_entities();
 
                                // schedule another requestAnimationFrame callback.
                                request_animation_frame(f.borrow().as_ref().unwrap());

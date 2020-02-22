@@ -33,7 +33,7 @@ impl BrowserDisplay<'_> {
                                            events: Rc::new(RefCell::new(vec![])),
                                            props: rdt::DisplayProperties::new(),
                                            camera: Camera::default(),
-                                           store: SpaceHash::new(),
+                                           space_hash: SpaceHash::new(),
                                            font_mgr: FontMgr::new() };
 
         display.ctx.enable(GL::BLEND);
@@ -49,15 +49,28 @@ impl BrowserDisplay<'_> {
 
     // Command: AddText
     // undo command
-    pub fn add_text(&mut self, cmd: rdt::Command) -> Result<Text, String> {
+    pub fn add_text(&mut self, cmd: rdt::Command) -> Result<rdt::EntityId, String> {
+        // add this to entity store
+
         if let rdt::Command::AddText(x, y, text) = cmd {
             let font = self.font_mgr.font();
             let mut text = Text::new(self, regmach::dsp::colors::JADE_BLUE, &font, &text)?;
             text.move_to(x, y);
-            return Ok(text);
+            Ok(self.store_entity(box text))
         } else {
             log!("BrowserDisplay::new_text method gets wrong command type: {:?}", cmd);
-            return Err("BrowserDisplay::new_text method gets wrong command type: {:?}".to_owned());
+            Err("BrowserDisplay::new_text method gets wrong command type: {:?}".to_owned())
+        }
+    }
+
+    pub fn store_entity(&mut self, ent: Box<rdt::Entity>) -> rdt::EntityId {
+        self.space_hash.insert(ent)
+    }
+
+    pub fn draw_entities(&mut self) {
+        // draw all visible entities store
+        for ent in self.space_hash.entities_iter() {
+            //ent.draw(self);
         }
     }
 

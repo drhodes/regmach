@@ -97,7 +97,6 @@ impl Text {
                                              colors,
                                              include_str!("../shaders/font-shader.vs"),
                                              include_str!("../shaders/font-shader.fs"))?;
-
         Ok(Text { color, font_mesh, text: text.to_owned() })
     }
 
@@ -108,4 +107,14 @@ impl Text {
     pub fn move_to(&mut self, x: f32, y: f32) {
         self.font_mesh.move_to(x, y);
     }
+}
+
+impl rdt::Entity for Text {
+    fn bounding_box(&self) -> rdt::BoundingBox {
+        rdt::BoundingBox { left: 0.0, right: 0.0, top: 0.0, bottom: 0.0 }
+    }
+    fn entity_id(&self) -> rdt::EntityId {
+        rdt::EntityId(42)
+    }
+    fn draw(&self, dsp: &mut dyn rdt::Display) {}
 }

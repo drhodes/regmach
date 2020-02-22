@@ -30,7 +30,8 @@ pub(crate) struct BucketLoc {
 }
 
 pub(crate) struct SpaceHash {
-    pub store: HashMap<BucketLoc, HashSet<rdt::EntityId>>,
+    pub(crate) store: HashMap<rdt::EntityId, Box<rdt::Entity>>,
+    pub(crate) space: HashMap<BucketLoc, HashSet<rdt::EntityId>>,
 }
 
 pub struct FontMesh {
@@ -53,7 +54,7 @@ pub struct BrowserDisplay<'a> {
     pub events: Rc<RefCell<Vec<rdt::Event>>>,
     pub props: rdt::DisplayProperties,
     pub camera: Camera,
-    pub(crate) store: SpaceHash,
+    pub(crate) space_hash: SpaceHash,
     pub(crate) font_mgr: FontMgr<'a>,
 }
 

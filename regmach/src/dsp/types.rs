@@ -15,8 +15,26 @@ pub struct Color {
     pub b: u8,
 }
 
-#[derive(Clone, Debug)]
-pub struct EntityId(u32);
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct EntityId(pub u32);
+
+pub struct WorldPoint {
+    pub x: f32,
+    pub y: f32,
+}
+
+pub struct BoundingBox {
+    pub left: f32,
+    pub right: f32,
+    pub top: f32,
+    pub bottom: f32,
+}
+
+pub trait Entity {
+    fn bounding_box(self: &Self) -> BoundingBox;
+    fn entity_id(self: &Self) -> EntityId;
+    fn draw(self: &Self, dsp: &mut Display);
+}
 
 /// High level interface commands supported by Display.
 
